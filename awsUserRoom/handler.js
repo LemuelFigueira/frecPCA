@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 const uuid = require('uuid/v4');
+const bcrypt = require('bcryptjs')
+const salt = bcrypt.genSaltSync(10)
 
 const userTable = process.env.USER_TABLE
 const roomTable = process.env.ROOM_TABLE
@@ -106,9 +108,6 @@ module.exports.getRoom = (event, context, callback) => {
     TableName : roomTable,
  
 }
-
-console.log(params)
-console.log(id)
 
   return db
     .query(params)
@@ -219,14 +218,65 @@ module.exports.createUser = (event, context, callback) => {
 
 
   if (
-    !reqBody.email ||
-    reqBody.email.trim() === ''
+    !reqBody.username ||
+    reqBody.username.trim() === ''
   
   ) {
     return callback(
       null,
       response(400, {
-        error: 'Usuário deve ter email'
+        error: 'Usuário não pode estar vazio.'
+      })
+    );
+  }
+
+  if (
+    !reqBody.password ||
+    reqBody.password.trim() === '' 
+  ) {
+    return callback(
+      null,
+      response(400, {
+        error: 'Usuário deve ter senha'
+      })
+    );
+  }
+
+  let hash = bcrypt.hashSync(reqBody.password, salt)
+  const user = {
+    id: uuid(),
+    createdAt: new Date().toISOString(),
+    username: reqBody.username,
+    password: hash,
+
+  };
+
+  return db
+    .put({
+      TableName: userTable,
+      Item: user,
+      ConditionExpression: "attribute_not_exists(username)"
+    })
+    .promise()
+    .then(() => {
+      callback(null, response(201, user));
+    })
+    .catch((err) => response(null, response(err.statusCode, err)));
+};
+
+module.exports.logIn = (event, context, callback) => {
+  const reqBody = JSON.parse(event.body);
+
+
+  if (
+    !reqBody.username ||
+    reqBody.username.trim() === ''
+  
+  ) {
+    return callback(
+      null,
+      response(400, {
+        error: 'Usuário deve ter username'
       })
     );
   }
