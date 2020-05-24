@@ -261,7 +261,10 @@ module.exports.createUser = (event, context, callback) => {
     .then(() => {
       callback(null, response(201, user));
     })
-    .catch((err) => response(null, response(err.statusCode, err)));
+    .catch((err) => {
+    
+      callback(null, response(400, 'Usuário já cadastrado'));
+    });
 };
 
 module.exports.logIn = (event, context, callback) => {
@@ -276,7 +279,7 @@ module.exports.logIn = (event, context, callback) => {
     return callback(
       null,
       response(400, {
-        error: 'Usuário deve ter username'
+        error: 'Usuário não informado'
       })
     );
   }
@@ -288,29 +291,34 @@ module.exports.logIn = (event, context, callback) => {
     return callback(
       null,
       response(400, {
-        error: 'Usuário deve ter senha'
+        error: 'Senha não informada'
       })
     );
   }
 
-  const user = {
-    id: uuid(),
-    createdAt: new Date().toISOString(),
-    email: reqBody.email,
-    password: reqBody.password,
-
-  };
+  const params = {
+    Key : { 
+      username:reqBody.username
+    },
+    TableName: userTable
+  }
 
   return db
-    .put({
-      TableName: userTable,
-      Item: user
-    })
+    .get(params)
     .promise()
-    .then(() => {
-      callback(null, response(201, user));
+    .then((data) => {
+      if(data){
+        let result = bcrypt.compareSync(reqBody.password,data.Item.password)
+        if(result){
+          callback(null, response(200,'Credencias Válidas'));
+        }else{
+          callback(null, response(403,'Senha ou usuário incorretos'));
+        }
+      }else{
+        callback(null, response(403,'Senha ou usuário incorretos'));
+      }
     })
-    .catch((err) => response(null, response(err.statusCode, err)));
+    .catch((err) => callback(null, response(403,'Senha ou usuário incorretos')));
 };
 
 
