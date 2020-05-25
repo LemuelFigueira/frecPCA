@@ -312,13 +312,13 @@ module.exports.logIn = (event, context, callback) => {
         if(result){
           callback(null, response(200,'Credencias Válidas'));
         }else{
-          callback(null, response(403,'Senha ou usuário incorretos'));
+          callback(null, response(401,'Senha ou usuário incorretos'));
         }
       }else{
-        callback(null, response(403,'Senha ou usuário incorretos'));
+        callback(null, response(401,'Senha ou usuário incorretos'));
       }
     })
-    .catch((err) => callback(null, response(403,'Senha ou usuário incorretos')));
+    .catch((err) => callback(null, response(401,'Senha ou usuário incorretos')));
 };
 
 

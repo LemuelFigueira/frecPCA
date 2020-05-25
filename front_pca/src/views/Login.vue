@@ -67,13 +67,29 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
+
 export default {
+  props: {
+    source: String
+  },
   data() {
     return {
-      value: String,
-      tab: null
+      username: "",
+      password: ""
     };
+  },
+  computed: {
+    ...mapState([ "notAuthenticated"])
+  },
+  methods: {
+    ...mapActions(["login"]),
+    auth() {
+      let username = this.username;
+      let password = this.password;
+      this.login({ username, password })
+    }
   }
-};
+}
 </script>
 
