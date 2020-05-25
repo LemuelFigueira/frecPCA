@@ -9,6 +9,11 @@ const roomTable = process.env.ROOM_TABLE
 // Create a response
 function response(statusCode, message) {
   return {
+    headers: {
+      "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+      "Access-Control-Allow-Methods" : "*",
+      "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
+    },
     statusCode: statusCode,
     body: JSON.stringify(message)
   };
@@ -259,7 +264,7 @@ module.exports.createUser = (event, context, callback) => {
     })
     .promise()
     .then(() => {
-      callback(null, response(201, user));
+      callback(null, response(201, 'Usuário criado'));
     })
     .catch((err) => {
     

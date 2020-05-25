@@ -7,9 +7,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         loginUrl: 'https://clvg7ob374.execute-api.sa-east-1.amazonaws.com/dev/login',
-        dataUrl: 'https://hjnl4vmgm7.execute-api.us-east-1.amazonaws.com/v1/survey/',
+        signInUrl: 'https://clvg7ob374.execute-api.sa-east-1.amazonaws.com/dev/sign',
         surveyName: '',
         notAuthenticated: '',
+        notCreated: '',
         surveyId: localStorage.getItem('userId') || null
     },
     mutations: {
@@ -20,7 +21,9 @@ export default new Vuex.Store({
         errorUserAuth(state, message) {
             state.notAuthenticated = message;
         },
-       
+        errorCreateUser(state, message) {
+            state.notCreated = message;
+        },
         removeSurveyId: (state) => {
             state.surveyId = null;
         }
@@ -53,9 +56,45 @@ export default new Vuex.Store({
                     response.json().then(result => {
                         if (response.status === 200) {
                             commit('errorUserAuth', '')
-                            router.push('/About')
+                            router.push('/Home')
                         } else if (response.status === 401) {
                             commit('errorUserAuth', result)
+                        }
+                    })
+                })
+
+                .catch(error => console.log('error', error))
+        },
+        async signIn({
+            state,
+            commit
+        }, {
+            username,
+            password
+        }) {
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            let raw = JSON.stringify({
+                "username": username,
+                "password": password
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(state.signInUrl, requestOptions)
+                .then(response => {
+                    response.json().then(result => {
+                        if (response.status === 201) {
+                          
+                            router.push('/Home')
+                        } else if (response.status === 400) {
+                            commit('errorCreateUser', result)
                         }
                     })
                 })

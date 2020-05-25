@@ -19,18 +19,20 @@
                   <v-card flat>
                     <v-card-text>
                       <v-form>
-                        <v-text-field label="Usuário" name="username" type="text"></v-text-field>
+                        <v-text-field label="Usuário" v-model="username" name="username" type="text"></v-text-field>
                         <v-text-field
                           id="password"
+                          v-model="password"
                           label="Senha"
                           name="password"
                           type="password"
                         ></v-text-field>
+                        {{notAuthenticated}}
                       </v-form>
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="deep-purple" dark>Login</v-btn>
+                      <v-btn color="deep-purple" dark @click="auth">Login</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-tab-item>
@@ -39,10 +41,10 @@
                     <v-card flat>
                       <v-card-text>
                         <v-form>
-                          <v-text-field label="Defina o usuário" name="username" type="text"></v-text-field>
+                          <v-text-field label="Defina o usuário" v-model="createUsername" name="username" type="text"></v-text-field>
                           <v-text-field
                             name="password"
-                            :value="myPass"
+                            v-model="createPassword"
                             label="Defina a senha"
                             :append-icon="value ? 'visibility' : 'visibility_off'"
                             @click:append="() => (value = !value)"
@@ -50,9 +52,10 @@
                           ></v-text-field>
                         </v-form>
                       </v-card-text>
+                       {{notCreated}}
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="deep-purple" dark>Sign up</v-btn>
+                        <v-btn color="deep-purple" dark @click="createUser">Sign up</v-btn>
                       </v-card-actions>
                     </v-card>
                   </v-card>
@@ -70,24 +73,32 @@
 import { mapActions, mapState } from "vuex";
 
 export default {
-  props: {
-    source: String
-  },
+ 
   data() {
     return {
+      value:String,
       username: "",
-      password: ""
+      password: "",
+      createUsername:"",
+      createPassword:""
     };
   },
   computed: {
-    ...mapState([ "notAuthenticated"])
+    ...mapState(["notAuthenticated","notCreated"])
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login","signIn"]),
     auth() {
       let username = this.username;
       let password = this.password;
+     
       this.login({ username, password })
+    },
+    createUser() {
+      let username = this.createUsername;
+      let password = this.createPassword;
+     
+      this.signIn({ username, password })
     }
   }
 }
