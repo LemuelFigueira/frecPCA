@@ -315,7 +315,7 @@ module.exports.logIn = (event, context, callback) => {
       if(data){
         let result = bcrypt.compareSync(reqBody.password,data.Item.password)
         if(result){
-          callback(null, response(200,'Credencias Válidas'));
+          callback(null, response(200,data));
         }else{
           callback(null, response(401,'Senha ou usuário incorretos'));
         }

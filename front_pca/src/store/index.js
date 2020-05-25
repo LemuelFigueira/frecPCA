@@ -8,15 +8,14 @@ export default new Vuex.Store({
     state: {
         loginUrl: 'https://clvg7ob374.execute-api.sa-east-1.amazonaws.com/dev/login',
         signInUrl: 'https://clvg7ob374.execute-api.sa-east-1.amazonaws.com/dev/sign',
-        surveyName: '',
         notAuthenticated: '',
         notCreated: '',
-        surveyId: localStorage.getItem('userId') || null
+        userId: localStorage.getItem('userId') || null
     },
     mutations: {
       
         userAuthenticated(state, id) {
-            state.surveyId = id;
+            state.userId = id;
         },
         errorUserAuth(state, message) {
             state.notAuthenticated = message;
@@ -24,8 +23,11 @@ export default new Vuex.Store({
         errorCreateUser(state, message) {
             state.notCreated = message;
         },
-        removeSurveyId: (state) => {
-            state.surveyId = null;
+        getSurvey: (state,userId) => {
+            state.userId = userId;
+        },
+        removeUserId: (state) => {
+            state.userId = null;
         }
     },
     actions: {
@@ -55,6 +57,9 @@ export default new Vuex.Store({
                 .then(response => {
                     response.json().then(result => {
                         if (response.status === 200) {
+                            
+                            localStorage.setItem('userId',result.Item.id)
+                            commit('userAuthenticated',result.Item.id)
                             commit('errorUserAuth', '')
                             router.push('/Home')
                         } else if (response.status === 401) {
@@ -101,11 +106,18 @@ export default new Vuex.Store({
 
                 .catch(error => console.log('error', error))
         },
+        fetchAccessToken({
+            state
+        }) {
+            if (state.userId) {
+                return state.userId
+            }
+        },
         logOut({
             commit
         }) {
-            commit('getSurveyId', localStorage.removeItem('surveyId'));
-            commit('removeSurveyId')
+            commit('getUserId', localStorage.removeItem('userId'));
+            commit('removeUserId')
             router.push('/Login')
         }
 
