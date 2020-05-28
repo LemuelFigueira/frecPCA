@@ -16,21 +16,23 @@
           </v-toolbar-items>
         </v-toolbar>
         <v-container class="grey lighten-5 pt-12">
-    
           <v-col cols="12" md="10" xs="10" lg="10">
             <form>
               <v-file-input label="Imagem do evento" filled prepend-icon="mdi-camera"></v-file-input>
               <v-text-field
                 v-model="name"
-                :counter="10"
+                :rules="nameRules"
+                :counter="20"
                 label="Nome do evento"
                 required
               ></v-text-field>
-              <v-text-field label="Descrição do evento" :counter="50"></v-text-field>
+              <v-text-field label="Descrição do evento" :rules="descriptionRules" :counter="50"></v-text-field>
               <v-select
                 v-model="quantidadeParticipantes"
                 :items="quantidade"
                 filled
+                required
+                :rules="[(v) => !v || 'Defina a quantidade de participantes']"
                 :menu-props="{ maxHeight:'200' }"
                 hint="Quantidade de participantes"
                 persistent-hint
@@ -47,10 +49,22 @@
 export default {
   data() {
     return {
-      quantidade:[10,50,100,300,500,1000],
-      name: '',
-      quantidadeParticipantes:Number,
+      quantidade: [10, 50, 100, 300, 500, 1000],
+      name: "",
+      quantidadeParticipantes: Number,
       dialog: false,
+      rules: [
+        value => !value || value.size < 5000000 || 'A foto do evento deve ser menor que 5 MB',
+      ],
+      nameRules: [
+        v => !!v || "Insira um nome para o seu evento",
+        v => (v && v.length <= 20) || "Nome deve ser menor que 20 caracteres"
+      ],
+      descriptionRules: [
+        v => !!v || "Insira uma descrição para o seu evento",
+        v => (v && v.length <= 50) || "Descrição deve ser menor que 20 caracteres"
+      ],
+      participantsRules: [v => !v || "Defina a quantidade de participantes"],
       notifications: false,
       sound: true,
       widgets: false
