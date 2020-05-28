@@ -23,7 +23,7 @@ export default new Vuex.Store({
         errorCreateUser(state, message) {
             state.notCreated = message;
         },
-        getSurvey: (state,userId) => {
+        getUserId: (state,userId) => {
             state.userId = userId;
         },
         removeUserId: (state) => {

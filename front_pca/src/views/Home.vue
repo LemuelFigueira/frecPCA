@@ -2,10 +2,11 @@
   <div id="app">
     <v-app id="inspire">
       <v-app id="inspire">
+        <CreateRoom :visible="showModal" @close="showModal=false" />
         <v-app-bar app color="deep-purple" dark>
-          <v-toolbar-title>Meus Eventos</v-toolbar-title>
+          <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn class="mx-3" fab dark small color="white">
+          <v-btn class="mx-3" fab dark small color="white" @click="createRoom">
             <v-icon dark color="deep-purple">mdi-plus</v-icon>
           </v-btn>
           <v-spacer></v-spacer>
@@ -43,14 +44,26 @@
 </template>
 <script>
 import { mapActions} from "vuex";
+import CreateRoom from "../components/CreateRoom.vue"
 export default {
  
   props: {
     source: String
   },
-  data: () => ({}),
+  components:{
+    CreateRoom
+  },
+   data () {
+      return {
+        showModal: false
+      }
+    },
   methods:{
-    ...mapActions(["logOut"])
+
+    ...mapActions(["logOut"]),
+    createRoom(){
+      this.showModal = true
+    }
   },
   mounted() {}
 };
