@@ -12,7 +12,7 @@
           <v-toolbar-title>Criar Evento</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="show = false">Criar!</v-btn>
+            <v-btn dark text @click="submit">Criar!</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-container class="grey lighten-5 pt-12">
@@ -21,18 +21,23 @@
               <v-file-input label="Imagem do evento" filled prepend-icon="mdi-camera"></v-file-input>
               <v-text-field
                 v-model="name"
-                :rules="nameRules"
+                :error-messages="nameErrors"
                 :counter="20"
-                label="Nome do evento"
+                label="Nome"
                 required
               ></v-text-field>
-              <v-text-field label="Descrição do evento" :rules="descriptionRules" :counter="50"></v-text-field>
+              <v-text-field
+                label="Descrição"
+                v-model="descripton"
+                :error-messages="descriptionErrors"
+                :counter="50"
+              ></v-text-field>
               <v-select
                 v-model="quantidadeParticipantes"
+                :error-messages="participantsErrors"
                 :items="quantidade"
                 filled
                 required
-                :rules="[(v) => !v || 'Defina a quantidade de participantes']"
                 :menu-props="{ maxHeight:'200' }"
                 hint="Quantidade de participantes"
                 persistent-hint
@@ -46,25 +51,33 @@
 </template>
 
 <script>
+import { required, maxLength } from "vuelidate/lib/validators";
 export default {
+  validations: {
+    name: { required, maxLength: maxLength(20) },
+    descripton: { required, maxLength: maxLength(50) },
+    quantidadeParticipantes: { required },
+    select: { required },
+    checkbox: {
+      checked(val) {
+        return val;
+      }
+    }
+  },
   data() {
     return {
       quantidade: [10, 50, 100, 300, 500, 1000],
       name: "",
-      quantidadeParticipantes: Number,
+      descripton: "",
+      quantidadeParticipantes: '',
       dialog: false,
       rules: [
-        value => !value || value.size < 5000000 || 'A foto do evento deve ser menor que 5 MB',
+        value =>
+          !value ||
+          value.size < 5000000 ||
+          "A foto do evento deve ser menor que 5 MB"
       ],
-      nameRules: [
-        v => !!v || "Insira um nome para o seu evento",
-        v => (v && v.length <= 20) || "Nome deve ser menor que 20 caracteres"
-      ],
-      descriptionRules: [
-        v => !!v || "Insira uma descrição para o seu evento",
-        v => (v && v.length <= 50) || "Descrição deve ser menor que 20 caracteres"
-      ],
-      participantsRules: [v => !v || "Defina a quantidade de participantes"],
+
       notifications: false,
       sound: true,
       widgets: false
@@ -72,6 +85,11 @@ export default {
   },
   props: {
     visible: Boolean
+  },
+  methods: {
+    submit() {
+      this.$v.$touch();
+    }
   },
   computed: {
     show: {
@@ -83,6 +101,30 @@ export default {
           this.$emit("close");
         }
       }
+    },
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.name.$dirty) return errors;
+      !this.$v.name.maxLength &&
+        errors.push("Nome do evento deve ter no máximo 20 caracteres ");
+      !this.$v.name.required && errors.push("Defina o nome do evento");
+      return errors;
+    },
+    descriptionErrors() {
+      const errors = [];
+      if (!this.$v.descripton.$dirty) return errors;
+      !this.$v.descripton.maxLength &&
+        errors.push("Descrição do evento deve ter no máximo 50 caracteres ");
+      !this.$v.descripton.required &&
+        errors.push("Crie uma descrição do evento");
+      return errors;
+    },
+    participantsErrors() {
+      console.log('sasdad',this.$v.quantidadeParticipantes)
+      const errors = [];
+      if (!this.$v.quantidadeParticipantes.$dirty) return errors;
+      !this.$v.quantidadeParticipantes.required && errors.push("Selecione a quantidade de participantes");
+      return errors;
     }
   }
 };
