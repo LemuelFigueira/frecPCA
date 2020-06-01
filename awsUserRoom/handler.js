@@ -10,9 +10,9 @@ const roomTable = process.env.ROOM_TABLE
 function response(statusCode, message) {
   return {
     headers: {
-      "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-      "Access-Control-Allow-Methods" : "*",
-      "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS 
+      "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Credentials": true // Required for cookies, authorization headers with HTTPS 
     },
     statusCode: statusCode,
     body: JSON.stringify(message)
@@ -30,7 +30,7 @@ module.exports.createRoom = (event, context, callback) => {
   if (
     !reqBody.userId ||
     reqBody.userId.trim() === ''
-  
+
   ) {
     return callback(
       null,
@@ -41,9 +41,22 @@ module.exports.createRoom = (event, context, callback) => {
   }
 
   if (
+    !reqBody.roomId ||
+    reqBody.roomId.trim() === ''
+
+  ) {
+    return callback(
+      null,
+      response(400, {
+        error: 'Sala deve ter id '
+      })
+    );
+  }
+
+  if (
     !reqBody.title ||
     reqBody.title.trim() === ''
-  
+
   ) {
     return callback(
       null,
@@ -55,7 +68,7 @@ module.exports.createRoom = (event, context, callback) => {
 
   if (
     !reqBody.descripton ||
-    reqBody.descripton.trim() === '' 
+    reqBody.descripton.trim() === ''
   ) {
     return callback(
       null,
@@ -65,25 +78,77 @@ module.exports.createRoom = (event, context, callback) => {
     );
   }
 
-  const room = {
-    roomId: uuid(),
-    createdAt: new Date().toISOString(),
-    userId: reqBody.userId,
-    title: reqBody.title,
-    descripton: reqBody.descripton,
-    body: reqBody.body
-  };
+  if (reqBody.roomPicture) {
+    let decodedImage = Buffer.from(reqBody.roomPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+    let s3bucket = new AWS.S3({
+      Bucket: 'rooms-pics',
+    });
 
-  return db
-    .put({
-      TableName: roomTable,
-      Item: room
-    })
-    .promise()
-    .then(() => {
-      callback(null, response(201, room));
-    })
-    .catch((err) => response(null, response(err.statusCode, err)));
+    var params = {
+      Bucket: 'rooms-pics',
+      Key: `${roomId}.${type}`,
+      Body: decodedImage,
+      ContentEncoding: 'base64',
+      ContentType: `image/${type}`
+    }
+    const s3Response = await s3.putObject(params).promise()
+
+    if (s3Response) {
+      let roomPicture = 'https://pca-knowns-users.s3.amazonaws.com/' + roomId + '.jpeg'
+
+      const room = {
+        roomId: reqBody.roomId,
+        roomPicture: roomPicture,
+        createdAt: new Date().toISOString(),
+        userId: reqBody.userId,
+        title: reqBody.title,
+        descripton: reqBody.descripton,
+
+      }
+
+      return db
+        .put({
+          TableName: roomTable,
+          Item: room
+        })
+        .promise()
+        .then(() => {
+          callback(null, response(201, room));
+        })
+        .catch((err) => response(null, response(err.statusCode, err)))
+
+    }
+
+  } else {
+
+    let roomPicture = 'https://pca-knowns-users.s3.amazonaws.com/' + roomId + '.jpeg'
+
+    const room = {
+      roomId: reqBody.roomId,
+      roomPicture: '',
+      createdAt: new Date().toISOString(),
+      userId: reqBody.userId,
+      title: reqBody.title,
+      descripton: reqBody.descripton,
+
+    }
+
+    return db
+      .put({
+        TableName: roomTable,
+        Item: room
+      })
+      .promise()
+      .then(() => {
+        callback(null, response(201, room));
+      })
+      .catch((err) => response(null, response(err.statusCode, err)))
+
+
+  }
+
+
+  ;
 };
 // Get all rooms
 module.exports.getAllRooms = (event, context, callback) => {
@@ -102,24 +167,24 @@ module.exports.getAllRooms = (event, context, callback) => {
 module.exports.getRoom = (event, context, callback) => {
   const id = event.pathParameters.roomId;
 
- 
+
 
   var params = {
-    
+
     KeyConditionExpression: 'roomId = :id',
     ExpressionAttributeValues: {
       ':id': id
     },
-    TableName : roomTable,
- 
-}
+    TableName: roomTable,
+
+  }
 
   return db
     .query(params)
     .promise()
     .then((res) => {
       callback(null, response(200, res.Items));
-      
+
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
 };
@@ -130,7 +195,7 @@ module.exports.updateRoom = (event, context, callback) => {
   const { title, description } = reqBody;
 
   if (
-    !reqBody  
+    !reqBody
   ) {
     return callback(
       null,
@@ -143,7 +208,7 @@ module.exports.updateRoom = (event, context, callback) => {
   if (
     !id ||
     id.trim() === ''
-  
+
   ) {
     return callback(
       null,
@@ -166,7 +231,7 @@ module.exports.updateRoom = (event, context, callback) => {
     },
     ReturnValues: 'ALL_NEW'
   };
- 
+
   return db
     .update(params)
     .promise()
@@ -180,7 +245,7 @@ module.exports.updateRoom = (event, context, callback) => {
 // Get users room
 module.exports.userRooms = (event, context, callback) => {
   const userId = event.pathParameters.roomId;
- 
+
   const params = {
     FilterExpression: 'userId = :userId',
     ExpressionAttributeValues: {
@@ -225,7 +290,7 @@ module.exports.createUser = (event, context, callback) => {
   if (
     !reqBody.username ||
     reqBody.username.trim() === ''
-  
+
   ) {
     return callback(
       null,
@@ -237,7 +302,7 @@ module.exports.createUser = (event, context, callback) => {
 
   if (
     !reqBody.password ||
-    reqBody.password.trim() === '' 
+    reqBody.password.trim() === ''
   ) {
     return callback(
       null,
@@ -267,7 +332,7 @@ module.exports.createUser = (event, context, callback) => {
       callback(null, response(201, 'Usuário criado'));
     })
     .catch((err) => {
-    
+
       callback(null, response(400, 'Usuário já cadastrado'));
     });
 };
@@ -279,7 +344,7 @@ module.exports.logIn = (event, context, callback) => {
   if (
     !reqBody.username ||
     reqBody.username.trim() === ''
-  
+
   ) {
     return callback(
       null,
@@ -291,7 +356,7 @@ module.exports.logIn = (event, context, callback) => {
 
   if (
     !reqBody.password ||
-    reqBody.password.trim() === '' 
+    reqBody.password.trim() === ''
   ) {
     return callback(
       null,
@@ -302,8 +367,8 @@ module.exports.logIn = (event, context, callback) => {
   }
 
   const params = {
-    Key : { 
-      username:reqBody.username
+    Key: {
+      username: reqBody.username
     },
     TableName: userTable
   }
@@ -312,18 +377,18 @@ module.exports.logIn = (event, context, callback) => {
     .get(params)
     .promise()
     .then((data) => {
-      if(data){
-        let result = bcrypt.compareSync(reqBody.password,data.Item.password)
-        if(result){
-          callback(null, response(200,data));
-        }else{
-          callback(null, response(401,'Senha ou usuário incorretos'));
+      if (data) {
+        let result = bcrypt.compareSync(reqBody.password, data.Item.password)
+        if (result) {
+          callback(null, response(200, data));
+        } else {
+          callback(null, response(401, 'Senha ou usuário incorretos'));
         }
-      }else{
-        callback(null, response(401,'Senha ou usuário incorretos'));
+      } else {
+        callback(null, response(401, 'Senha ou usuário incorretos'));
       }
     })
-    .catch((err) => callback(null, response(401,'Senha ou usuário incorretos')));
+    .catch((err) => callback(null, response(401, 'Senha ou usuário incorretos')));
 };
 
 

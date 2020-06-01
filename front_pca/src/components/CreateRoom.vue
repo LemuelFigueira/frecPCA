@@ -17,8 +17,8 @@
         </v-toolbar>
         <v-container class="grey lighten-5 pt-12">
           <v-col cols="12" md="10" xs="10" lg="10">
+            <v-file-input  label="Imagem do evento"  accept="image/png, image/jpeg, image/bmp, image/jpeg" :rules="rules" v-model="roomPic" filled prepend-icon="mdi-camera"></v-file-input>
             <form>
-              <v-file-input label="Imagem do evento" filled prepend-icon="mdi-camera"></v-file-input>
               <v-text-field
                 v-model="name"
                 :error-messages="nameErrors"
@@ -56,20 +56,15 @@ export default {
   validations: {
     name: { required, maxLength: maxLength(20) },
     descripton: { required, maxLength: maxLength(50) },
-    quantidadeParticipantes: { required },
-    select: { required },
-    checkbox: {
-      checked(val) {
-        return val;
-      }
-    }
+    quantidadeParticipantes: { required }
   },
   data() {
     return {
       quantidade: [10, 50, 100, 300, 500, 1000],
       name: "",
+      roomPic:null,
       descripton: "",
-      quantidadeParticipantes: '',
+      quantidadeParticipantes: "",
       dialog: false,
       rules: [
         value =>
@@ -87,8 +82,23 @@ export default {
     visible: Boolean
   },
   methods: {
-    submit() {
+    async submit() {
       this.$v.$touch();
+      const result = await this.$v.$anyError;
+
+      let fileType = this.roomPic.type.split("/")
+      if(!result && fileType[0] === 'image'){
+       
+        console.log(fileType[0])
+        console.log(this.roomPic)
+        console.log(this.quantidadeParticipantes)
+        console.log(this.name)
+        console.log(this.descripton)
+       
+      }else if(fileType[0] !== 'image'){
+        
+      }
+    
     }
   },
   computed: {
@@ -120,12 +130,13 @@ export default {
       return errors;
     },
     participantsErrors() {
-      console.log('sasdad',this.$v.quantidadeParticipantes)
       const errors = [];
       if (!this.$v.quantidadeParticipantes.$dirty) return errors;
-      !this.$v.quantidadeParticipantes.required && errors.push("Selecione a quantidade de participantes");
+      !this.$v.quantidadeParticipantes.required &&
+        errors.push("Selecione a quantidade de participantes");
       return errors;
     }
+    
   }
 };
 </script>
