@@ -33,11 +33,11 @@
             ></v-file-input>
             <form>
               <v-menu
-                ref="menu"
-                v-model="menu2"
+                ref="menu1"
+                v-model="menu1"
                 :close-on-content-click="false"
                 :nudge-right="40"
-                :return-value.sync="time"
+                :return-value.sync="beginTime"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
@@ -45,18 +45,47 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    v-model="time"
-                    label="Picker in menu"
+                    v-model="beginTime"
+                    label="Início do evento"
                     prepend-icon="access_time"
                     readonly
                     v-on="on"
                   ></v-text-field>
                 </template>
                 <v-time-picker
-                  v-if="menu2"
-                  v-model="time"
+                  color="green lighten-1"
+                  v-if="menu1"
+                  v-model="beginTime"
                   full-width
-                  @click:minute="$refs.menu.save(time)"
+                  @click:minute="$refs.menu1.save(beginTime)"
+                ></v-time-picker>
+              </v-menu>
+              <v-menu
+                ref="menu"
+                v-model="menu2"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="endTime"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="endTime"
+                    label="Fim do evento"
+                    prepend-icon="access_time"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  color="red lighten-1"
+                  v-if="menu2"
+                  v-model="endTime"
+                  full-width
+                  @click:minute="$refs.menu.save(endTime)"
                 ></v-time-picker>
               </v-menu>
               <v-text-field
@@ -110,7 +139,10 @@ export default {
 
   data() {
     return {
-      time: null,
+      beginTime: null,
+      menu1: false,
+      modal1: false,
+      endTime: null,
       menu2: false,
       modal2: false,
       errorMessage: "",
