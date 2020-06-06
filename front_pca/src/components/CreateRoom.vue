@@ -187,7 +187,9 @@ export default {
       console.log('',fileType)
 
       if (!result && (fileType === "image" || fileType ==='') && this.beginTime && this.endTime) {
-       
+        if(fileType ===''){
+          this.invalidImage = ""
+        }
         console.log('foto da sala',this.roomPic);
         console.log('inicio do evento',this.beginTime);
         console.log('final do evento',this.endTime);
@@ -196,9 +198,6 @@ export default {
         console.log('cidade',this.city);
         console.log('bairro',this.district);
         console.log('participants',this.numberParticipants);
-
-       
-
       } else {
         if (fileType) {
           if (fileType !== "image") {
