@@ -31,35 +31,38 @@
               filled
               prepend-icon="mdi-camera"
             ></v-file-input>
-            <form>
-              <v-menu
-                ref="menu1"
-                v-model="menu1"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                :return-value.sync="beginTime"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="beginTime"
-                    label="Início do evento"
-                    prepend-icon="access_time"
-                    readonly
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                  color="green lighten-1"
-                  v-if="menu1"
+            <p v-if="invalidImage">{{invalidImage}}</p>
+            <v-menu
+              ref="menu1"
+              v-model="menu1"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="beginTime"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
                   v-model="beginTime"
-                  full-width
-                  @click:minute="$refs.menu1.save(beginTime)"
-                ></v-time-picker>
-              </v-menu>
+                  label="Início do evento"
+                  prepend-icon="access_time"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                color="green lighten-1"
+                :error-messages="participantsErrors"
+                v-if="menu1"
+                v-model="beginTime"
+                full-width
+                @click:minute="$refs.menu1.save(beginTime)"
+              ></v-time-picker>
+            </v-menu>
+            <p v-if="errorMessagebeginTime">{{errorMessagebeginTime}}</p>
+            <form>
               <v-menu
                 ref="menu"
                 v-model="menu2"
@@ -82,12 +85,14 @@
                 </template>
                 <v-time-picker
                   color="red lighten-1"
+                  :error-messages="participantsErrors"
                   v-if="menu2"
                   v-model="endTime"
                   full-width
                   @click:minute="$refs.menu.save(endTime)"
                 ></v-time-picker>
               </v-menu>
+              <p v-if="errorMessageEndTime">{{errorMessageEndTime}}</p>
               <v-text-field
                 v-model="name"
                 :error-messages="nameErrors"
@@ -145,7 +150,9 @@ export default {
       endTime: null,
       menu2: false,
       modal2: false,
-      errorMessage: "",
+      invalidImage: null,
+      errorMessagebeginTime: null,
+      errorMessageEndTime: null,
       quantidade: [10, 50, 100, 300, 500, 1000],
       name: "",
       adress: "",
@@ -174,16 +181,36 @@ export default {
     async submit() {
       this.$v.$touch();
       const result = await this.$v.$anyError;
+      console.log(this.beginTime);
+      console.log(this.endTime);
 
-      let fileType = this.roomPic.type.split("/");
-      if (!result && fileType[0] === "image") {
-        console.log(fileType[0]);
-        console.log(this.roomPic);
-        console.log(this.quantidadeParticipantes);
-        console.log(this.name);
-        console.log(this.descripton);
-      } else if (fileType[0] !== "image") {
-        console.log("erro");
+      let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : null;
+      console.log(fileType);
+      if (!result && fileType === "image" && this.beginTime && this.beginTime) {
+        // console.log(fileType[0]);
+        // console.log(this.roomPic);
+        // console.log(this.quantidadeParticipantes);
+        // console.log(this.name);
+        // console.log(this.descripton);
+      } else {
+        if (fileType) {
+          if (fileType !== "image") {
+            this.invalidImage = "Selecione uma imagem válida";
+          } else {
+            this.invalidImage = "";
+          }
+        }
+        if (!this.beginTime) {
+          this.errorMessagebeginTime = "Defina o horário de inicio do evento";
+        } else {
+          this.errorMessagebeginTime = "";
+        }
+        if (!this.endTime) {
+          this.errorMessageEndTime =
+            "Defina o horário de encerramento do evento";
+        } else {
+          this.errorMessageEndTime = "";
+        }
       }
     }
   },
@@ -246,3 +273,12 @@ export default {
   }
 };
 </script>
+<style scoped>
+.v-application p {
+  font-size: 12px;
+  line-height: px;
+  text-align: left;
+  color: #ff5252 !important;
+  caret-color: #ff5252 !important;
+}
+</style>
