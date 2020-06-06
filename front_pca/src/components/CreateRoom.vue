@@ -111,7 +111,7 @@
               <v-text-field label="Bairro" v-model="district" :error-messages="districtErrors"></v-text-field>
 
               <v-select
-                v-model="quantidadeParticipantes"
+                v-model="numberParticipants"
                 :error-messages="participantsErrors"
                 :items="quantidade"
                 filled
@@ -139,7 +139,7 @@ export default {
     adress: { required },
     district: { required },
     city: { required },
-    quantidadeParticipantes: { required }
+    numberParticipants: { required }
   },
 
   data() {
@@ -160,7 +160,7 @@ export default {
       district: "",
       roomPic: null,
       descripton: "",
-      quantidadeParticipantes: "",
+      numberParticipants: "",
       dialog: false,
       rules: [
         value =>
@@ -181,17 +181,24 @@ export default {
     async submit() {
       this.$v.$touch();
       const result = await this.$v.$anyError;
-      console.log(this.beginTime);
-      console.log(this.endTime);
 
-      let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : null;
-      console.log(fileType);
-      if (!result && fileType === "image" && this.beginTime && this.beginTime) {
-        // console.log(fileType[0]);
-        // console.log(this.roomPic);
-        // console.log(this.quantidadeParticipantes);
-        // console.log(this.name);
-        // console.log(this.descripton);
+
+      let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : '';
+      console.log('',fileType)
+
+      if (!result && (fileType === "image" || fileType ==='') && this.beginTime && this.endTime) {
+       
+        console.log('foto da sala',this.roomPic);
+        console.log('inicio do evento',this.beginTime);
+        console.log('final do evento',this.endTime);
+        console.log('nome deo evento',this.name);
+        console.log('descrição',this.descripton);
+        console.log('cidade',this.city);
+        console.log('bairro',this.district);
+        console.log('participants',this.numberParticipants);
+
+       
+
       } else {
         if (fileType) {
           if (fileType !== "image") {
@@ -242,16 +249,16 @@ export default {
     },
     adressErrors() {
       const errors = [];
-      if (!this.$v.name.$dirty) return errors;
+      if (!this.$v.adress.$dirty) return errors;
 
-      !this.$v.name.required && errors.push("Defina o endereço do evento");
+      !this.$v.adress.required && errors.push("Defina o endereço do evento");
       return errors;
     },
     districtErrors() {
       const errors = [];
-      if (!this.$v.name.$dirty) return errors;
+      if (!this.$v.district.$dirty) return errors;
 
-      !this.$v.name.required && errors.push("Defina o bairro do evento");
+      !this.$v.district.required && errors.push("Defina o bairro do evento");
       return errors;
     },
     descriptionErrors() {
@@ -265,8 +272,8 @@ export default {
     },
     participantsErrors() {
       const errors = [];
-      if (!this.$v.quantidadeParticipantes.$dirty) return errors;
-      !this.$v.quantidadeParticipantes.required &&
+      if (!this.$v.numberParticipants.$dirty) return errors;
+      !this.$v.numberParticipants.required &&
         errors.push("Selecione a quantidade de participantes");
       return errors;
     }
