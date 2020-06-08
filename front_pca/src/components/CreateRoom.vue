@@ -102,7 +102,7 @@
               ></v-text-field>
               <v-text-field
                 label="Descrição"
-                v-model="descripton"
+                v-model="description"
                 :error-messages="descriptionErrors"
                 :counter="100"
               ></v-text-field>
@@ -129,19 +129,20 @@
 </template>
 
 <script>
+import Event from "@/repositories/Event";
 import { required, maxLength } from "vuelidate/lib/validators";
+import { mapState } from "vuex";
 // import VueTimepicker from "vue2-timepicker";
 // import "vue2-timepicker/dist/VueTimepicker.css";
 export default {
   validations: {
     name: { required, maxLength: maxLength(50) },
-    descripton: { required, maxLength: maxLength(100) },
+    description: { required, maxLength: maxLength(100) },
     adress: { required },
     district: { required },
     city: { required },
     numberParticipants: { required }
   },
-
   data() {
     return {
       beginTime: null,
@@ -159,7 +160,7 @@ export default {
       city: "",
       district: "",
       roomPic: null,
-      descripton: "",
+      description: "",
       numberParticipants: "",
       dialog: false,
       rules: [
@@ -182,22 +183,36 @@ export default {
       this.$v.$touch();
       const result = await this.$v.$anyError;
 
+      let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : "";
+      console.log("", fileType);
 
-      let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : '';
-      console.log('',fileType)
-
-      if (!result && (fileType === "image" || fileType ==='') && this.beginTime && this.endTime) {
-        if(fileType ===''){
-          this.invalidImage = ""
+      if (
+        !result &&
+        (fileType === "image" || fileType === "") &&
+        this.beginTime &&
+        this.endTime
+      ) {
+        if (fileType === "") {
+          this.invalidImage = "";
         }
-        console.log('foto da sala',this.roomPic);
-        console.log('inicio do evento',this.beginTime);
-        console.log('final do evento',this.endTime);
-        console.log('nome deo evento',this.name);
-        console.log('descrição',this.descripton);
-        console.log('cidade',this.city);
-        console.log('bairro',this.district);
-        console.log('participants',this.numberParticipants);
+        const newEvent = {
+          eventBeginTime: this.beginTime,
+          eventEndTime: this.endTime,
+          eventDistrict: this.district,
+          eventCity: this.city,
+          eventAdress: this.adress,
+          roomPicture: this.roomPic,
+          userId: this.userId,
+          eventName: this.name,
+          eventParticipants: this.numberParticipants,
+          eventDescription: this.description
+        };
+        console.log(newEvent)
+        Event.createRoom(newEvent).then(response => {
+          response.json().then(data => {
+            console.log(data);
+          }).catch(error => console.log('error', error));
+        });
       } else {
         if (fileType) {
           if (fileType !== "image") {
@@ -221,6 +236,8 @@ export default {
     }
   },
   computed: {
+    ...mapState(["userId"]),
+
     show: {
       get() {
         return this.visible;
@@ -262,11 +279,11 @@ export default {
     },
     descriptionErrors() {
       const errors = [];
-      if (!this.$v.descripton.$dirty) return errors;
-      !this.$v.descripton.maxLength &&
+      if (!this.$v.description.$dirty) return errors;
+      !this.$v.description.maxLength &&
         errors.push("Descrição do evento deve ter no máximo 100 caracteres ");
-      !this.$v.descripton.required &&
-        errors.push("Crie uma descrição do evento");
+      !this.$v.description.required &&
+        errors.push("Crie uma descrição para o evento");
       return errors;
     },
     participantsErrors() {

@@ -14,6 +14,11 @@ const participantTable = process.env.PARTICIPANT_TABLE
 // Create a response
 function response(statusCode, message) {
   return {
+    headers: {
+      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*"
+  },
     statusCode: statusCode,
     body: JSON.stringify(message)
   };

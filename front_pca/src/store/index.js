@@ -6,8 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        loginUrl: 'https://clvg7ob374.execute-api.sa-east-1.amazonaws.com/dev/login',
-        signInUrl: 'https://clvg7ob374.execute-api.sa-east-1.amazonaws.com/dev/sign',
+        loginUrl: 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/login',
+        signInUrl: 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/sign',
         notAuthenticated: '',
         notCreated: '',
         userId: localStorage.getItem('userId') || null
@@ -96,9 +96,13 @@ export default new Vuex.Store({
                 .then(response => {
                     response.json().then(result => {
                         if (response.status === 201) {
-                          
+                            console.log(result)
+                            localStorage.setItem('userId',result.id)
+                            commit('userAuthenticated',result.id)
+                            commit('errorUserAuth', '')
                             router.push('/Home')
                         } else if (response.status === 400) {
+                            console.log('nao')
                             commit('errorCreateUser', result)
                         }
                     })

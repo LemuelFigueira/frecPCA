@@ -36,54 +36,71 @@ functions:
     - http:
         path: /room
         method: post
+        cors: true
+
   getAllRooms:
     handler: handler.getAllRooms
     events:
     - http:
         path: /rooms
         method: get
+        cors: true
   getRoom:
     handler: handler.getRoom
     events:
     - http:
         path: /room/{roomId}
         method: get
+        cors: true
+
   getUserRooms:
     handler: handler.userRooms
     events:
     - http:
         path: /room/user/{roomId}
         method: get
+        cors: true
+ 
   updateRoom:
     handler: handler.updateRoom
     events:
     - http:
         path: /room/{roomId}
         method: put
+        cors: true
+      
   deleteRoom:
     handler: handler.deleteRoom
     events:
     - http:
         path: /room/{roomId}
         method: delete
+        cors: true
+ 
   createUser:
     handler: handler.createUser
     events:
     - http:
         path: /sign
         method: post
+        cors: true
+  
   logIn:
     handler: handler.logIn
     events:
     - http:
         path: /login
         method: post
+        cors: true
+ 
   getAllUsers:
     handler: handler.getAllUsers
     events:
     - http:
         path: /user
         method: get
+        cors: true
+     
   
 
 resources:
