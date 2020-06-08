@@ -3,7 +3,13 @@ service: participant
 custom:
   settings:
     PARTICIPANT_TABLE: participant
+  apigwBinary:
+    types:
+      - 'multipart/form-data'
    
+plugins:
+ - serverless-apigw-binary
+
 
 provider:
   name: aws
@@ -20,9 +26,12 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        - s3:getObject
+        - s3:putObject
      Resource:
-      - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.PARTICIPANT_TABLE}"
-
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.PARTICIPANT_TABLE}"
+        - "arn:aws:s3::*:*"
+    
 functions:
   createParticipant:
     handler: handler.createParticipant
@@ -63,4 +72,3 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.settings.PARTICIPANT_TABLE}
-    

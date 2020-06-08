@@ -1,13 +1,16 @@
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-const uuid = require('uuid/v4');
+const {"v4": uuidv4} = require('uuid')
+const multipart = require('aws-multipart-parser');
+const shortid = require('shortid');
 
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
-AWS.config.update({
-  accessKeyId: process.env.accessKeyId,
-  secretAccessKey: process.env.secretAccessKey,
-  region:  process.env.region
-});
+// AWS.config.update({
+//   accessKeyId: process.env.accessKeyId,
+//   secretAccessKey: process.env.secretAccessKey,
+//   region:  process.env.region
+// });
 
 const participantTable = process.env.PARTICIPANT_TABLE
 
@@ -30,21 +33,11 @@ function sortByDate(a, b) {
 }
 
 module.exports.createParticipant = (event, context, callback) => {
-  const reqBody = JSON.parse(event.body);
-  let userPictureKey = uuid()
-
-  if (
-    !reqBody.id ||
-    reqBody.id.trim() === ''
-
-  ) {
-    return callback(
-      null,
-      response(400, {
-        error: 'Participante deve ter id '
-      })
-    );
-  }
+  const reqBody = multipart.parse(event, true);
+  
+  
+  
+  let userPictureKey = uuidv4()
 
   if (
     !reqBody.roomId ||
@@ -83,9 +76,9 @@ module.exports.createParticipant = (event, context, callback) => {
     );
   }
 
-  let decodedImage = Buffer.from(reqBody.userPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+  // let decodedImage = Buffer.from(reqBody.userPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
 
-  const type = reqBody.userPicture.split(';')[0].split('/')[1]
+  const type = reqBody.userPicture.contentType.split('/')[1]
 
   let s3bucket = new AWS.S3({
     Bucket: 'pca-knowns-users',
@@ -94,9 +87,8 @@ module.exports.createParticipant = (event, context, callback) => {
   var params = {
     Bucket: 'pca-knowns-users',
     Key: `${userPictureKey}.${type}`,
-    Body: decodedImage,
-    ContentEncoding: 'base64', 
-    ContentType: `image/${type}`
+    Body: reqBody.userPicture.content,
+    ContentType: reqBody.userPicture.contentType
   };
   s3bucket.putObject(params, function (err, data) {
     if (err) {
@@ -104,10 +96,10 @@ module.exports.createParticipant = (event, context, callback) => {
       console.log(err);
     } else if (data) {
 
-      let userPicture = 'https://pca-knowns-users.s3.amazonaws.com/' + userPictureKey + '.jpeg'
+      let userPicture = 'https://pca-knowns-users.s3.amazonaws.com/' + userPictureKey + `.${type}`
 
       const participant = {
-        id: reqBody.id,
+        id: shortid.generate(),
         createdAt: new Date().toISOString(),
         roomId: reqBody.roomId,
         name: reqBody.name,
@@ -201,4 +193,3 @@ module.exports.getParticipantByRoom = (event, context, callback) => {
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
 };
-

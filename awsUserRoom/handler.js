@@ -166,7 +166,7 @@ module.exports.createRoom = (event, context, callback) => {
       })
       .catch((err) => callback(null, response(err.statusCode, err)))
   }else{
-    callback(null, response(201, 'sem foto'))
+    callback(null, response(201, reqBody.roomPicture))
   }
 
 
