@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
+import Invite from '../views/Invite.vue'
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -23,6 +24,14 @@ const routes = [{
 }, {
   path: '*',
   redirect: '/login',
+},
+{
+  path: '/invite/:id',
+  name: 'invite',
+  component: Invite,
+  meta: {
+    requiresVisitor: true,
+  }
 }]
 
 const router = new VueRouter({

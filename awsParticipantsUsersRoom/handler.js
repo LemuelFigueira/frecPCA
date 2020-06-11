@@ -76,9 +76,10 @@ module.exports.createParticipant = (event, context, callback) => {
     );
   }
 
-  // let decodedImage = Buffer.from(reqBody.userPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+  let decodedImage = Buffer.from(reqBody.userPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
 
-  const type = reqBody.userPicture.contentType.split('/')[1]
+  const type = reqBody.userPicture.split(';')[0].split('/')[1]
+  // const type = reqBody.userPicture.contentType.split('/')[1]
 
   let s3bucket = new AWS.S3({
     Bucket: 'pca-knowns-users',
@@ -87,8 +88,9 @@ module.exports.createParticipant = (event, context, callback) => {
   var params = {
     Bucket: 'pca-knowns-users',
     Key: `${userPictureKey}.${type}`,
-    Body: reqBody.userPicture.content,
-    ContentType: reqBody.userPicture.contentType
+    Body: decodedImage,
+    ContentEncoding: 'base64', 
+    ContentType: `image/${type}`,
   };
   s3bucket.putObject(params, function (err, data) {
     if (err) {
