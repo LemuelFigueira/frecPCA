@@ -33,9 +33,7 @@ function sortByDate(a, b) {
 }
 
 module.exports.createParticipant = (event, context, callback) => {
-  const reqBody = multipart.parse(event, true);
-  
-  
+  const reqBody = multipart.parse(event, true)
   
   let userPictureKey = uuidv4()
 

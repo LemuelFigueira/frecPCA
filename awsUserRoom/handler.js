@@ -25,7 +25,8 @@ function sortByDate(a, b) {
 }
 
 module.exports.createRoom = (event, context, callback) => {
-  const reqBody = JSON.parse(event.body);
+  const reqBody = multipart.parse(event, true)
+  
 
   if (
     !reqBody.userId ||
@@ -138,7 +139,7 @@ module.exports.createRoom = (event, context, callback) => {
     );
   }
   let id = uuid()
-  if (!reqBody.roomPicture) {
+  if (reqBody.roomPicture) {
     const room = {
       roomId: id,
       eventBeginTime: reqBody.eventBeginTime,
@@ -146,7 +147,7 @@ module.exports.createRoom = (event, context, callback) => {
       eventDistrict: reqBody.eventDistrict,
       eventCity: reqBody.eventCity,
       eventAdress: reqBody.eventAdress,
-      roomPicture: '',
+      roomPicture:reqBody.roomPicture ,
       createdAt: new Date().toISOString(),
       userId: reqBody.userId,
       eventName: reqBody.eventName,

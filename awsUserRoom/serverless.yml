@@ -4,6 +4,12 @@ custom:
   settings:
     ROOM_TABLE: room
     USER_TABLE: user
+  apigwBinary:
+    types:
+      - 'multipart/form-data'
+   
+plugins:
+ - serverless-apigw-binary
 
 provider:
   name: aws
