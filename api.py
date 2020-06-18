@@ -36,7 +36,7 @@ def face_recognition():
             response = requests.request("POST", url, headers=headers, json = obj)
             person = json.loads(response.text)
 
-            # Chamando Aplicação de Reconhecimento Facial           
+            # Chamando Aplicação de Reconhecimento Facial        
             name = face_rec(file, person)    
             if name == 'Unknown':
                 resp_data = "not register"
@@ -44,4 +44,4 @@ def face_recognition():
                 resp_data = 'Not find any face'
             else:
                 resp_data = "Register"
-            return name
+            return resp_data
