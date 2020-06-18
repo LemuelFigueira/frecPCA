@@ -3,6 +3,7 @@
     <v-app id="inspire">
       <v-app id="inspire">
         <CreateRoom :visible="showModal" @close="showModal=false" />
+        <GuestCheck :visible="showModal" @close="showModal=false" />
         <v-app-bar app color="deep-purple" dark>
           <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -27,6 +28,9 @@
               <v-col class="text-center">
                 <v-tooltip left>
                   <template v-slot:activator="{ on }">
+                    <v-btn class="mx-3" fab dark small color="white" @click="guestcheck">
+                      <v-icon dark color="deep-purple">mdi-plus</v-icon>
+                    </v-btn>
                     <v-btn :href="source" icon large target="_blank" v-on="on">
                       <v-icon large>mdi-code-tags</v-icon>
                     </v-btn>
@@ -43,26 +47,29 @@
   </div>
 </template>
 <script>
-import { mapActions} from "vuex";
-import CreateRoom from "../components/CreateRoom.vue"
+import { mapActions } from "vuex";
+import CreateRoom from "../components/CreateRoom.vue";
+import GuestCheck from "../components/GuestCheck.vue";
 export default {
- 
   props: {
     source: String
   },
-  components:{
-    CreateRoom
+  components: {
+    CreateRoom,
+    GuestCheck
   },
-   data () {
-      return {
-        showModal: false
-      }
-    },
-  methods:{
-
+  data() {
+    return {
+      showModal: false
+    };
+  },
+  methods: {
     ...mapActions(["logOut"]),
-    createRoom(){
-      this.showModal = true
+    createRoom() {
+      this.showModal = true;
+    },
+    guestcheck() {
+      this.showModal = true;
     }
   },
   mounted() {}
