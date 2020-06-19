@@ -4,7 +4,7 @@ const apiCheck =  'https://recface-api.herokuapp.com/face_rec'
 
 
 export default {
-    async createParticipant(Event) {
+    async createParticipant(Participant) {
 
         const params = {
             method: 'POST',
@@ -13,11 +13,11 @@ export default {
             //     "Accept": "multipart/form-data",
                 
             // },
-            body: Event
+            body: Participant
         }
         return fetch(api, params)
     },
-    async checkParticipant(Event) {
+    async checkParticipant(Participant) {
 
         const params = {
             method: 'POST',
@@ -26,7 +26,7 @@ export default {
             //     "Accept": "multipart/form-data",
                 
             // },
-            body: Event
+            body: Participant
         }
         return fetch(apiCheck, params)
     }

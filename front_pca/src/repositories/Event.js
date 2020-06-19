@@ -10,12 +10,12 @@ export default {
 
         const params = {
             method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-                "Accept": "application/json",
+        //    headers: {
+        //         "Content-type": "multipart/form-data",
+        //         "Accept": "multipart/form-data",
                 
-            },
-            body: JSON.stringify(Event)
+        //     },
+            body: Event
         }
         return fetch(api, params)
     },

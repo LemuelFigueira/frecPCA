@@ -184,7 +184,8 @@ export default {
       const result = await this.$v.$anyError;
 
       let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : "";
-      console.log("", fileType);
+      let picture = this.roomPic ? this.roomPic : 'no picture'
+      
 
       if (
         !result &&
@@ -195,23 +196,26 @@ export default {
         if (fileType === "") {
           this.invalidImage = "";
         }
-        const newEvent = {
-          eventBeginTime: this.beginTime,
-          eventEndTime: this.endTime,
-          eventDistrict: this.district,
-          eventCity: this.city,
-          eventAdress: this.adress,
-          roomPicture: this.roomPic,
-          userId: this.userId,
-          eventName: this.name,
-          eventParticipants: this.numberParticipants,
-          eventDescription: this.description
-        };
-        console.log(newEvent)
-        Event.createRoom(newEvent).then(response => {
-          response.json().then(data => {
-            console.log(data);
-          }).catch(error => console.log('error', error));
+        var event = new FormData();
+        event.append("eventBeginTime", this.beginTime);
+        event.append("eventEndTime", this.endTime);
+        event.append("eventDistrict", this.district);
+        event.append("eventCity", this.city);
+        event.append("eventAdress", this.adress);
+        event.append("roomPicture",  picture);
+        event.append("userId",  this.userId);
+        event.append("eventName",  this.name);
+        event.append("eventParticipants", this.numberParticipants);
+        event.append("eventDescription", this.description);
+        
+
+        Event.createRoom(event).then(response => {
+          response
+            .json()
+            .then(data => {
+              console.log(data);
+            })
+            .catch(error => console.log("error", error));
         });
       } else {
         if (fileType) {

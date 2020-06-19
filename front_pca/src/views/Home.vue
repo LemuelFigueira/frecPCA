@@ -3,7 +3,7 @@
     <v-app id="inspire">
       <v-app id="inspire">
         <CreateRoom :visible="showModal" @close="showModal=false" />
-        <GuestCheck :visible="showModal" @close="showModal=false" />
+        <!-- <GuestCheck :visible="showModal" @close="showModal=false" /> -->
         <v-app-bar app color="deep-purple" dark>
           <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -49,14 +49,14 @@
 <script>
 import { mapActions } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
-import GuestCheck from "../components/GuestCheck.vue";
+// import GuestCheck from "../components/GuestCheck.vue";
 export default {
   props: {
     source: String
   },
   components: {
     CreateRoom,
-    GuestCheck
+   
   },
   data() {
     return {
@@ -68,9 +68,9 @@ export default {
     createRoom() {
       this.showModal = true;
     },
-    guestcheck() {
-      this.showModal = true;
-    }
+    // guestcheck() {
+    //   this.showModal = true;
+    // }
   },
   mounted() {}
 };
