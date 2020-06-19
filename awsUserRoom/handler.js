@@ -4,6 +4,9 @@ const { "v4": uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 const multipart = require('aws-multipart-parser');
 const salt = bcrypt.genSaltSync(10)
+const s3bucket = new AWS.S3({
+  Bucket: 'event-pics-pca',
+});
 
 const userTable = process.env.USER_TABLE
 const roomTable = process.env.ROOM_TABLE
@@ -145,11 +148,9 @@ module.exports.createRoom = async (event, context, callback) => {
 
   if (reqBody.roomPicture !== 'no picture') {
     const type = reqBody.roomPicture.contentType.split('/')[1]
-  
-    let s3bucket = new AWS.S3({
-      Bucket: 'event-pics-pca',
-    });
-    
+
+   
+
     var params = {
       Bucket: 'event-pics-pca',
       Key: `${eventId}.${type}`,
@@ -158,40 +159,39 @@ module.exports.createRoom = async (event, context, callback) => {
     };
 
     s3bucket.putObject(params, function (err, data) {
-     
-
-        
-        let eventPicture = 'https:///event-pics-pca.s3.amazonaws.com/' + eventId + `.${type}`
-        const room = {
-          roomId: eventId,
-          eventBeginTime: reqBody.eventBeginTime,
-          eventEndTime: reqBody.eventEndTime,
-          eventDistrict: reqBody.eventDistrict,
-          eventCity: reqBody.eventCity,
-          eventAdress: reqBody.eventAdress,
-          roomPicture: eventPicture,
-          createdAt: new Date().toISOString(),
-          userId: reqBody.userId,
-          eventName: reqBody.eventName,
-          participants: reqBody.eventParticipants,
-          eventDescription: reqBody.eventDescription,
-
-        }
-
-        return db
-          .put({
-            TableName: roomTable,
-            Item: room
-          })
-          .promise()
-          .then(() => {
-            callback(null, response(201, room));
-          })
-          .catch((err) => callback(null, response(err.statusCode, err)))
-
-     
+    
     })
-  
+
+
+    let eventPicture = 'https://event-pics-pca.s3.amazonaws.com/' + eventId + `.${type}`
+    const room = {
+      roomId: eventId,
+      eventBeginTime: reqBody.eventBeginTime,
+      eventEndTime: reqBody.eventEndTime,
+      eventDistrict: reqBody.eventDistrict,
+      eventCity: reqBody.eventCity,
+      eventAdress: reqBody.eventAdress,
+      roomPicture: eventPicture,
+      createdAt: new Date().toISOString(),
+      userId: reqBody.userId,
+      eventName: reqBody.eventName,
+      participants: reqBody.eventParticipants,
+      eventDescription: reqBody.eventDescription,
+
+    }
+
+    return db
+      .put({
+        TableName: roomTable,
+        Item: room
+      })
+      .promise()
+      .then(() => {
+        callback(null, response(201, room));
+      })
+      .catch((err) => callback(null, response(err.statusCode, err)))
+
+
   } else {
 
     const room = {
