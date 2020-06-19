@@ -146,79 +146,73 @@ module.exports.createRoom = async (event, context, callback) => {
 
 
 
-  if (reqBody.roomPicture !== 'no picture') {
+  const room = {
+    roomId: eventId,
+    eventBeginTime: reqBody.eventBeginTime,
+    eventEndTime: reqBody.eventEndTime,
+    eventDistrict: reqBody.eventDistrict,
+    eventCity: reqBody.eventCity,
+    eventAdress: reqBody.eventAdress,
+    roomPicture: "",
+    createdAt: new Date().toISOString(),
+    userId: reqBody.userId,
+    eventName: reqBody.eventName,
+    participants: reqBody.eventParticipants,
+    eventDescription: reqBody.eventDescription,
+  }
+
+  if (reqBody.roomPicture === 'no picture'){
+    
+    return db
+      .put({
+        TableName: roomTable,
+        Item: room,
+        ConditionExpression: 'attribute_not_exists(id)',
+      })
+      .promise()
+      .then(() => {
+        callback(null, response(201, room));
+      })
+      .catch((err) => callback(null, response(err.statusCode, err)))
+      
+  }else{
+    
     const type = reqBody.roomPicture.contentType.split('/')[1]
-
-   
-
+  
+    let s3bucket = new AWS.S3({
+      Bucket: 'event-pics-pca',
+    });
+  
     var params = {
       Bucket: 'event-pics-pca',
       Key: `${eventId}.${type}`,
       Body: reqBody.roomPicture.content,
       ContentType: type
     };
-
-    s3bucket.putObject(params, function (err, data) {
     
+    s3bucket.putObject(params, function (err, data) {
+      if (err) {
+        console.log('error in callback');
+        console.log(err);
+      } else if (data) {
+        
+        let eventPicture = 'https://event-pics-pca.s3.amazonaws.com/' + eventId + `.${type}`
+        room.roomPicture = eventPicture
+        
+        return db
+        .put({
+          TableName: roomTable,
+          Item: room,
+          ConditionExpression: 'attribute_not_exists(id)',
+        })
+        .promise()
+        .then(() => {
+          callback(null, response(201, room));
+        })
+        .catch((err) => callback(null, response(err.statusCode, err)))
+        
+      }
     })
-
-
-    let eventPicture = 'https://event-pics-pca.s3.amazonaws.com/' + eventId + `.${type}`
-    const room = {
-      roomId: eventId,
-      eventBeginTime: reqBody.eventBeginTime,
-      eventEndTime: reqBody.eventEndTime,
-      eventDistrict: reqBody.eventDistrict,
-      eventCity: reqBody.eventCity,
-      eventAdress: reqBody.eventAdress,
-      roomPicture: eventPicture,
-      createdAt: new Date().toISOString(),
-      userId: reqBody.userId,
-      eventName: reqBody.eventName,
-      participants: reqBody.eventParticipants,
-      eventDescription: reqBody.eventDescription,
-
-    }
-
-    return db
-      .put({
-        TableName: roomTable,
-        Item: room
-      })
-      .promise()
-      .then(() => {
-        callback(null, response(201, room));
-      })
-      .catch((err) => callback(null, response(err.statusCode, err)))
-
-
-  } else {
-
-    const room = {
-      roomId: eventId,
-      eventBeginTime: reqBody.eventBeginTime,
-      eventEndTime: reqBody.eventEndTime,
-      eventDistrict: reqBody.eventDistrict,
-      eventCity: reqBody.eventCity,
-      eventAdress: reqBody.eventAdress,
-      roomPicture: '',
-      createdAt: new Date().toISOString(),
-      userId: reqBody.userId,
-      eventName: reqBody.eventName,
-      participants: reqBody.eventParticipants,
-      eventDescription: reqBody.eventDescription,
-
-    }
-    return db
-      .put({
-        TableName: roomTable,
-        Item: room
-      })
-      .promise()
-      .then(() => {
-        callback(null, response(201, room));
-      })
-      .catch((err) => callback(null, response(err.statusCode, err)))
   }
 };
 // Get all rooms
