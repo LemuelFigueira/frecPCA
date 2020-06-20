@@ -105,6 +105,7 @@ module.exports.createParticipant = (event, context, callback) => {
         roomId: reqBody.roomId,
         name: reqBody.name,
         userPicture: `${userPictureKey}.${type}`,
+        validity: false
 
       };
 
@@ -124,14 +125,12 @@ module.exports.createParticipant = (event, context, callback) => {
           } else {
             response(null, response(err.statusCode, err))
           }
-
         })
-
     }
   })
 
-    ;
 };
+
 // Get all rooms
 module.exports.getAllparticipant = (event, context, callback) => {
   return db
@@ -144,7 +143,38 @@ module.exports.getAllparticipant = (event, context, callback) => {
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
 };
-// Update a room
+
+// Update a Participant
+module.exports.updateParticipant = (event, context, callback) => {
+  const reqBody = JSON.parse(event.body)
+
+  const id = reqBody.id;
+  const roomId = reqBody.roomId;
+
+  const params = {
+    TableName:participantTable,
+    Key:{
+        "id": id,
+        "roomId": roomId
+    },
+    UpdateExpression: "set validity = :v",
+    ExpressionAttributeValues:{
+        ":v":true,
+    },
+    ReturnValues:"UPDATED_NEW"
+  };
+
+  console.log("Updating the item...");
+  return db
+  .update(params)
+  .promise()
+  .then(() => {
+    callback(null, response(201, "UpdateItem succeeded"));
+  })
+  .catch((err) => callback(null, response(err.statusCode, err)));
+}
+
+// Get a Participant By Room
 module.exports.getParticipantByRoom = (event, context, callback) => {
   const reqBody = JSON.parse(event.body)
   const id = reqBody.id;

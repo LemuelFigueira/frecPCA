@@ -33,7 +33,7 @@
                     :error-messages="descriptionErrors"
                     :counter="100"
                   ></v-text-field>
-                  <!-- <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input> -->
+                  <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input>
                 </form>
                 <v-btn :disabled="step === 1" text @click="step--">Voltar</v-btn>
                 <v-spacer></v-spacer>
@@ -69,8 +69,9 @@
 import Camera from "../components/Camera.vue";
 import { required, maxLength } from "vuelidate/lib/validators";
 import Participant from "@/repositories/Participant";
+// import Convert from "@/repositories/ConvertToFile";
 import { mapState } from "vuex";
-import SweetAlertIcons from 'vue-sweetalert-icons';
+import SweetAlertIcons from "vue-sweetalert-icons";
 // import VueTimepicker from "vue2-timepicker";
 // import "vue2-timepicker/dist/VueTimepicker.css";
 export default {
@@ -84,7 +85,7 @@ export default {
   },
   data() {
     return {
-      alerticon: '',
+      alerticon: "",
       showalert: false,
       fromChild: "",
       roomPic: "",
@@ -106,40 +107,49 @@ export default {
     },
     async submit() {
       this.$v.$touch();
-      this.showalert = true
-      this.alerticon = "loading"
-      const convertBase64ToFile = function(image) {
-        const byteString = atob(image.split(",")[1]);
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for (let i = 0; i < byteString.length; i += 1) {
-          ia[i] = byteString.charCodeAt(i);
-        }
-        const newBlob = new File([ab], {
-          type: "image/jpeg"
-        });
-        return newBlob;
+      this.showalert = true;
+      this.alerticon = "loading";
+
+      const participant = {
+        id: this.questId,
+        roomId: "c813173f-d289-4594-85f0-ec149bc0412b"
       };
-
-      const newIMG = convertBase64ToFile(this.fromChild);
-
-      var formData = new FormData();
-      formData.append("file", newIMG);
-      formData.append("idPerson", this.questId);
-      formData.append("roomId", "a86d18dc-d0b8-4cd5-ac51-01f18c0c9cad");
-      formData.append("eventName", this.name);
-      // for (var value of formData.values()) {
-      //   console.log(value);
-      // }
-      Participant.checkParticipant(formData).then(response => {
+      Participant.checkvalidity(participant).then(response => {
         response
-          .text()
+          .json()
           .then(data => {
-            console.log(data);
-            if(data == "Register"){
-              this.alerticon = "success"
-            }else{
-              this.alerticon = "error"
+            if (data[0]["validity"] === false) {
+              // const newIMG = Convert.convertBase64ToFile(this.fromChild);
+              var formData = new FormData();
+              formData.append("file", this.roomPic);
+              formData.append("idPerson", this.questId);
+              formData.append("roomId", "c813173f-d289-4594-85f0-ec149bc0412b");
+              formData.append("eventName", this.name);
+              for (var value of formData.values()) {
+                console.log(value);
+              }
+              Participant.checkParticipant(formData).then(response => {
+                response
+                  .text()
+                  .then(data => {
+                    console.log(data);
+                    if (data == "Register") {
+                      this.alerticon = "success";
+                      Participant.updateParticipant(participant)
+                    } else {
+                      this.alerticon = "error";
+                    }
+                  })
+                  .catch(error => console.log("error", error));
+              });
+              Participant.updateParticipant(participant).then(response => {
+                response
+                  .json()
+                  .then(data => {
+                    console.log(data);
+                  })
+                  .catch(error => console.log("error", error));
+              });
             }
           })
           .catch(error => console.log("error", error));

@@ -51,6 +51,12 @@ functions:
     - http:
         path: /room/participant
         method: post
+  updateParticipant:
+    handler: handler.updateParticipant
+    events:
+    - http:
+        path: /room/updateparticipant
+        method: post
   
 
 resources:
