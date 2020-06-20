@@ -28,9 +28,9 @@
               <v-col class="text-center">
                 <v-tooltip left>
                   <template v-slot:activator="{ on }">
-                    <v-btn class="mx-3" fab dark small color="white" @click="guestcheck">
+                    <!-- <v-btn class="mx-3" fab dark small color="white" @click="guestcheck">
                       <v-icon dark color="deep-purple">mdi-plus</v-icon>
-                    </v-btn>
+                    </v-btn>-->
                     <v-btn :href="source" icon large target="_blank" v-on="on">
                       <v-icon large>mdi-code-tags</v-icon>
                     </v-btn>
@@ -47,30 +47,47 @@
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions,mapState } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
+import Event from "@/repositories/Event";
 // import GuestCheck from "../components/GuestCheck.vue";
 export default {
   props: {
     source: String
   },
   components: {
-    CreateRoom,
-   
+    CreateRoom
   },
   data() {
     return {
       showModal: false
     };
   },
+  computed: {
+    ...mapState(["userId",])
+  },
   methods: {
     ...mapActions(["logOut"]),
     createRoom() {
       this.showModal = true;
-    },
+    }
     // guestcheck() {
     //   this.showModal = true;
     // }
+  },
+  created() {
+    let user = {
+      userId : this.userId
+    }
+ 
+    Event.getRooms(user).then(response => {
+      response
+        .text()
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => console.log("error", error));
+    });
   },
   mounted() {}
 };

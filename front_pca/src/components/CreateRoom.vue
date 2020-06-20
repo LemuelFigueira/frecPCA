@@ -297,7 +297,7 @@ export default {
         errors.push("Selecione a quantidade de participantes");
       return errors;
     }
-  }
+  },
 };
 </script>
 <style scoped>

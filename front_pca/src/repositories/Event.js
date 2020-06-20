@@ -21,7 +21,7 @@ export default {
     },
 
     async getroom(Event) {
-        const apii = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/room/' + Event
+        const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/room/' + Event
         const params = {
             method: 'GET',
             headers: {
@@ -30,7 +30,25 @@ export default {
                 
             }
         }
-        return fetch(apii, params)
+        return fetch(api, params)
+    },
+
+    async getRooms(user) {
+
+        const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/room/user/'
+       
+       
+        
+        const params = {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+                
+            },
+            body:  JSON.stringify(user)
+        }
+        return fetch(api, params)
     }
 
 }

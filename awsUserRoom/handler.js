@@ -28,7 +28,7 @@ function sortByDate(a, b) {
   } else return 1;
 }
 
-module.exports.createRoom = async (event, context, callback) => {
+module.exports.createRoom =  (event, context, callback) => {
   const reqBody = multipart.parse(event, true)
 
   let eventId = uuidv4()
@@ -309,7 +309,23 @@ module.exports.updateRoom = (event, context, callback) => {
 
 // Get users room
 module.exports.userRooms = (event, context, callback) => {
-  const userId = event.pathParameters.roomId;
+  const reqBody = JSON.parse(event.body);
+  const userId = reqBody.userId
+  
+  if (
+    !reqBody.userId ||
+    reqBody.userId.trim() === ''
+
+  ) {
+    return callback(
+      null,
+      response(400, {
+        error: 'userId é obrigatório.'
+      })
+    );
+  }
+
+ 
 
   const params = {
     FilterExpression: 'userId = :userId',

@@ -62,8 +62,8 @@ functions:
     handler: handler.userRooms
     events:
     - http:
-        path: /room/user/{roomId}
-        method: get
+        path: /room/user
+        method: post
         cors: true
  
   updateRoom:
