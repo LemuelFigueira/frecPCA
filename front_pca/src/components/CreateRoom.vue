@@ -106,6 +106,27 @@
                 :error-messages="descriptionErrors"
                 :counter="100"
               ></v-text-field>
+              <v-menu
+                v-model="menudate2"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    :error-messages="dateErrors"
+                    v-model="dateFormatted"
+                    label="Escolha a data do evento"
+                    prepend-icon="event"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker locale="pt-br" v-model="picker" no-title @input="menudate2 = false"></v-date-picker>
+              </v-menu>
               <v-text-field label="Endereço" v-model="adress" :error-messages="adressErrors"></v-text-field>
               <v-text-field label="Cidade" v-model="city" :error-messages="cityErrors"></v-text-field>
               <v-text-field label="Bairro" v-model="district" :error-messages="districtErrors"></v-text-field>
@@ -155,14 +176,19 @@ export default {
     name: { required, maxLength: maxLength(50) },
     description: { required, maxLength: maxLength(100) },
     adress: { required },
+    dateFormatted: { required },
     district: { required },
     city: { required },
     numberParticipants: { required }
   },
   data() {
     return {
+      menudate2: false,
       color: "",
       mode: "",
+      dateFormatted:'',
+      picker: "",
+      eventDate: "",
       snackbar: false,
       text: "",
       timeout: 4000,
@@ -202,8 +228,14 @@ export default {
   props: {
     visible: Boolean
   },
+  watch: {
+       picker(val) {
+        this.dateFormatted = this.formatDate(val)
+      },
+    },
   methods: {
     async submit() {
+      console.log(this.picker);
       this.$v.$touch();
 
       const result = await this.$v.$anyError;
@@ -222,7 +254,7 @@ export default {
         }
 
         var file = this.roomPic ? this.roomPic : "";
-        console.log(this.description)
+     
         const newEvent = {
           eventBeginTime: this.beginTime,
           eventEndTime: this.endTime,
@@ -232,7 +264,8 @@ export default {
           userId: this.userId,
           eventName: this.name,
           eventParticipants: this.numberParticipants,
-          eventDescription: this.description
+          eventDescription: this.description,
+          eventDate: this.dateFormatted
         };
 
         if (file) {
@@ -256,7 +289,7 @@ export default {
           response
             .json()
             .then(data => {
-              console.log(data)
+              console.log(data);
               if (response.status === 201) {
                 this.created = true;
                 this.color = "success";
@@ -289,14 +322,21 @@ export default {
         }
       }
     },
+    formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+      },
+
     backHome() {
-      console.log(this.created)
+      console.log(this.created);
       if (this.created) {
         this.$emit("eventCreated", true);
       }
-     
-      this.$forceUpdate()
-      this.created = false
+
+      this.$forceUpdate();
+      this.created = false;
       this.show = false;
     }
   },
@@ -308,13 +348,14 @@ export default {
         return this.visible;
       },
       set(value) {
-             
         if (!value) {
-     
           this.created = false;
           this.$emit("close");
         }
       }
+    },
+    computedDateFormatted () {
+      return this.formatDate(this.date);
     },
     nameErrors() {
       const errors = [];
@@ -352,6 +393,13 @@ export default {
         errors.push("Descrição do evento deve ter no máximo 100 caracteres ");
       !this.$v.description.required &&
         errors.push("Crie uma descrição para o evento");
+      return errors;
+    },
+    dateErrors() {
+      const errors = [];
+      if (!this.$v.dateFormatted.$dirty) return errors;
+      !this.$v.dateFormatted.required &&
+        errors.push("Defina a data do evento");
       return errors;
     },
     participantsErrors() {

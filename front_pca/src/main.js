@@ -5,7 +5,9 @@ import router from './router'
 import Vuex from 'vuex'
 import store from './store'
 import Vuelidate from 'vuelidate'
-
+import Clipboard from 'v-clipboard'
+ 
+Vue.use(Clipboard)
 Vue.use(Vuelidate)
 Vue.use(Vuex)
 Vue.config.productionTip = false

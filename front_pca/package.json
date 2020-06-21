@@ -11,6 +11,7 @@
     "aws-sdk": "^2.686.0",
     "core-js": "^3.6.4",
     "uuid": "^8.1.0",
+    "v-clipboard": "^2.2.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vue-sweetalert-icons": "^4.2.0",

@@ -120,7 +120,7 @@ export default {
       timeout: 4000,
       created: false,
       x: null,
-      y: "bottom",
+      y: '',
       showModal: false,
       items: []
     };
@@ -168,6 +168,7 @@ export default {
             if (response.status === 200) {
               this.color = "success";
               this.text = "Evento excluído";
+              this.y = 'bottom'
               this.snackbar = true;
               this.getUserEvents();
             }
@@ -182,15 +183,17 @@ export default {
     },
     copyUrl(roomId) {
       let baseUrl = `https://vuejs-teste.s3-sa-east-1.amazonaws.com/index.html#/invite/${roomId}`;
-      try {
-        baseUrl.select();
-        let successful = document.execCommand("copy");
+      let result = this.$clipboard(baseUrl);
+      if (result) {
         this.color = "success";
         this.text = "Url do evento copiada";
+        this.y = 'top'
         this.snackbar = true;
-        this.getUserEvents();
-      } catch (err) {
-        alert("Oops, unable to copy");
+      } else {
+        this.color = "error";
+        this.text = "Url do evento copiada";
+        this.y = 'top'
+        this.snackbar = true;
       }
     }
   },

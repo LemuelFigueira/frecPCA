@@ -125,7 +125,7 @@ module.exports.createParticipant = (event, context, callback) => {
         })
         .promise()
         .then(() => {
-          callback(null, response(201, "Registrado"));
+          callback(null, response(201, participant.id));
         })
         .catch((err) => {
           if (err.statusCode === 400) {
