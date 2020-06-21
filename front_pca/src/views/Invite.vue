@@ -27,18 +27,16 @@
                   <v-container>
                     <v-col cols="12" md="10" xs="10" lg="10">
                       <v-card class="mx-auto" max-width="400">
-                        <v-img
-                          class="white--text align-end"
-                          height="200px"
-                          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                        >
+                        <v-img class="white--text align-end" height="200px" :src="roomPicture">
                           <v-card-title>{{ eventname }}</v-card-title>
                         </v-img>
 
                         <!-- <v-card-title>{{ eventname }}</v-card-title> -->
-                        <v-card-subtitle class="pb-0 text-left">{{ adress }},{{ city }},{{ district }}</v-card-subtitle>
+                        <v-card-subtitle
+                          class="pb-0 text-left"
+                        >{{ adress }},{{ city }},{{ district }}</v-card-subtitle>
 
-                        <v-card-text class=text-left >
+                        <v-card-text class="text-left">
                           <div class="my-4">{{ description }}</div>
                         </v-card-text>
 
@@ -133,6 +131,7 @@
                           label="Nome"
                           required
                         ></v-text-field>
+                        <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input>
                         <v-row>
                           <v-btn :disabled="step === 1" text @click="step--">Voltar</v-btn>
                           <v-spacer></v-spacer>
@@ -143,8 +142,6 @@
                             @click="step++"
                           >Próximo</v-btn>
                         </v-row>
-
-                        <!-- <v-btn rounded color="primary" dark @click="submit">Registrar-se</v-btn> -->
                       </form>
                     </v-col>
                   </v-container>
@@ -153,11 +150,12 @@
             </v-content>
           </v-window-item>
           <v-window-item :value="3">
-            <Camera v-on:childToParent="onChildClick"/>
+            <Camera v-on:childToParent="onChildClick" />
             <v-row class="ma-5">
               <v-btn :disabled="step === 1" text @click="step--">Voltar</v-btn>
               <v-spacer></v-spacer>
-              <v-btn :disabled="step === 3" color="primary" depressed @click="step++">Próximo</v-btn>
+              <v-btn rounded color="primary" dark @click="submit">Registrar-se</v-btn>
+              <!-- <v-btn :disabled="step === 3" color="primary" depressed @click="step++">Próximo</v-btn> -->
             </v-row>
           </v-window-item>
         </v-window>
@@ -172,6 +170,7 @@ import { mapActions } from "vuex";
 import Event from "@/repositories/Event";
 import Participant from "@/repositories/Participant";
 import Camera from "../components/Camera.vue";
+// import Convert from "@/repositories/ConvertToFile";
 export default {
   props: {
     source: String
@@ -181,6 +180,7 @@ export default {
   },
   data() {
     return {
+      roomPicture: "",
       fromChild: "",
       showModal: false,
       eventname: "",
@@ -199,15 +199,16 @@ export default {
     onChildClick(value) {
       this.fromChild = value;
     },
-    submit() {
+    submit() {      
+      // const newIMG = Convert.convertBase64ToFile(this.fromChild);
+
       var formData = new FormData();
       formData.append("name", this.name);
-      formData.append("userPicture", this.fromChild);
+      formData.append("userPicture", this.roomPic);
       formData.append("roomId", this.$route.params.id);
-      // for (var value of formData.values()) {
-      //   console.log(value);
-      // }
-      // console.log(this.fromChild)
+      for (var value of formData.values()) {
+        console.log(value);
+      }
       Participant.createParticipant(formData).then(response => {
         response
           .json()
@@ -229,6 +230,7 @@ export default {
         .json()
         .then(data => {
           this.eventname = data[0]["eventName"];
+          this.roomPicture = data[0]["roomPicture"];
           this.district = data[0]["eventDistrict"];
           this.adress = data[0]["eventAdress"];
           this.city = data[0]["eventCity"];
