@@ -3,7 +3,7 @@
     <v-app id="inspire">
       <v-app id="inspire">
         <!-- <Camera :visible="showModal" v-on:childToParent="onChildClick" @close="showModal=false" /> -->
-        <v-app-bar app color="deep-purple" dark>
+        <!-- <v-app-bar app color="deep-purple" dark>
           <v-toolbar-title>Evento</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
@@ -17,7 +17,7 @@
               <v-list-item @click="this.logOut">Sair</v-list-item>
             </v-list>
           </v-menu>
-        </v-app-bar>
+        </v-app-bar>-->
 
         <v-window v-model="step" touchless>
           <v-window-item :value="1">
@@ -61,63 +61,13 @@
                           >Registrar-se</v-btn>
                         </v-card-actions>
                       </v-card>
-                      <!-- 
-                      <v-file-input
-                        label="Imagem do evento"
-                        accept="image/png, image/jpeg, image/bmp, image/jpeg"
-                        :rules="rules"
-                        v-model="roomPic"
-                        filled
-                        prepend-icon="mdi-camera"
-                      ></v-file-input>
-                      <p v-if="invalidImage">{{invalidImage}}</p>
-                      <v-text-field v-model="eventname" label="Nome evento" disabled></v-text-field>
-                      <v-text-field label="Descrição" v-model="description" disabled></v-text-field>
-                      <v-text-field
-                        v-model="beginTime"
-                        label="Início do evento"
-                        prepend-icon="access_time"
-                        disabled
-                      ></v-text-field>
-
-                      <v-text-field
-                        v-model="endTime"
-                        label="Fim do evento"
-                        prepend-icon="access_time"
-                        disabled
-                      ></v-text-field>
-                      <p v-if="errorMessageEndTime">{{errorMessageEndTime}}</p>
-                      <v-text-field label="Endereço" v-model="adress" disabled></v-text-field>
-                      <v-text-field label="Cidade" v-model="city" disabled></v-text-field>
-                      <v-text-field label="Bairro" v-model="district" disabled></v-text-field>
-                      <form>
-                        <v-text-field
-                          name="name"
-                          v-model="name"
-                          :error-messages="nameErrors"
-                          label="Nome"
-                          required
-                        ></v-text-field>
-                        <v-btn class="mx-3" fab dark small color="white" @click="camera">
-                      <v-icon dark color="deep-purple">camera</v-icon>
-                        </v-btn>
-                        <v-btn :disabled="step === 1" text @click="step--">Back</v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn :disabled="step === 3" color="primary" depressed @click="step++">Next</v-btn>
-
-                        <v-btn rounded color="primary" dark @click="submit">Registrar-se</v-btn>
-
-                        <v-btn class="mx-3" fab dark small color="white" @click="camera">
-                    <v-icon dark color="deep-purple">mdi-plus</v-icon>
-                        </v-btn>
-                      </form>-->
                     </v-col>
                   </v-container>
                 </v-row>
               </v-container>
             </v-content>
           </v-window-item>
-          <v-window-item :value="2">
+          <v-window-item class="inputMargin" :value="2">
             <v-content>
               <v-container class="fill-height" fluid>
                 <v-row align="center" justify="center">
@@ -128,19 +78,18 @@
                           name="name"
                           v-model="name"
                           :error-messages="nameErrors"
-                          label="Nome"
+                          label="Insira seu Nome"
                           required
                         ></v-text-field>
-                        <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input>
+                        <!-- <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input> -->
                         <v-row>
-                          <v-btn :disabled="step === 1" text @click="step--">Voltar</v-btn>
+                          <v-btn :disabled="step === 1" text @click="step--">
+                            <v-icon size="48">mdi-arrow-left-circle</v-icon>
+                          </v-btn>
                           <v-spacer></v-spacer>
-                          <v-btn
-                            :disabled="step === 3"
-                            color="primary"
-                            depressed
-                            @click="step++"
-                          >Próximo</v-btn>
+                          <v-btn :disabled="step === 3" text @click="step++">
+                            <v-icon size="48">mdi-arrow-right-circle</v-icon>
+                          </v-btn>
                         </v-row>
                       </form>
                     </v-col>
@@ -151,16 +100,53 @@
           </v-window-item>
           <v-window-item :value="3">
             <Camera v-on:childToParent="onChildClick" />
-            <v-row class="ma-5">
+            <!-- <v-row class="ma-5">
               <v-btn :disabled="step === 1" text @click="step--">Voltar</v-btn>
               <v-spacer></v-spacer>
-              <v-btn rounded color="primary" dark @click="submit">Registrar-se</v-btn>
-              <!-- <v-btn :disabled="step === 3" color="primary" depressed @click="step++">Próximo</v-btn> -->
-            </v-row>
+              <v-btn :disabled="step === 4" color="primary" depressed @click="step++">Próximo</v-btn>
+            </v-row>-->
+          </v-window-item>
+          <v-window-item :value="4">
+            <v-content>
+              <v-container class="fill-height" fluid>
+                <v-row align="center" justify="center">
+                  <v-container>
+                    <v-col cols="12" md="10" xs="10" lg="10">
+                      <v-row>
+                        <template>
+                          <div class="video mb-6">
+                            <img :src="fromChild" />
+                          </div>
+                        </template>
+                        <v-btn :disabled="step === 1" text @click="step--">
+                          <v-icon size="48">mdi-arrow-left-circle</v-icon>
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn :disabled="step === 3" text @click="register">
+                          <v-icon size="48">mdi-arrow-right-circle</v-icon>
+                        </v-btn>
+                      </v-row>
+                    </v-col>
+                  </v-container>
+                </v-row>
+              </v-container>
+            </v-content>
+          </v-window-item>
+          <v-window-item :value="5">
+            <v-content>
+              <v-container class="fill-height" fluid>
+                <v-row align="center" justify="center">
+                  <v-container>
+                    <v-col cols="12" md="10" xs="10" lg="10">
+                      <SweetAlertIcons v-show="showalert" :icon="alerticon" />
+                      <h2>{{ menssage }}</h2>
+                    </v-col>
+                  </v-container>
+                </v-row>
+              </v-container>
+            </v-content>
           </v-window-item>
         </v-window>
-
-        <v-footer color="deep-purple" app></v-footer>
       </v-app>
     </v-app>
   </div>
@@ -170,19 +156,24 @@ import { mapActions } from "vuex";
 import Event from "@/repositories/Event";
 import Participant from "@/repositories/Participant";
 import Camera from "../components/Camera.vue";
-// import Convert from "@/repositories/ConvertToFile";
+import SweetAlertIcons from "vue-sweetalert-icons";
+import Convert from "@/repositories/ConvertToFile";
 export default {
   props: {
     source: String
   },
   components: {
-    Camera
+    Camera,
+    SweetAlertIcons
   },
   data() {
     return {
+      menssage: "",
+      alerticon: "",
       roomPicture: "",
       fromChild: "",
       showModal: false,
+      showalert: false,
       eventname: "",
       description: "",
       adress: "",
@@ -197,14 +188,23 @@ export default {
   },
   methods: {
     onChildClick(value) {
-      this.fromChild = value;
+      if (value !== "") {
+        this.step++;
+        this.fromChild = value;
+      }
     },
-    submit() {      
-      // const newIMG = Convert.convertBase64ToFile(this.fromChild);
+    register() {
+      this.step++;
+      this.submit();
+    },
+    submit() {
+      const newIMG = Convert.convertBase64ToFile(this.fromChild);
 
+      this.showalert = true;
+      this.alerticon = "loading";
       var formData = new FormData();
       formData.append("name", this.name);
-      formData.append("userPicture", this.roomPic);
+      formData.append("userPicture", newIMG);
       formData.append("roomId", this.$route.params.id);
       for (var value of formData.values()) {
         console.log(value);
@@ -212,8 +212,13 @@ export default {
       Participant.createParticipant(formData).then(response => {
         response
           .json()
-          .then(data => {
-            console.log(data);
+          .then(() => {
+            if (response.status == 201) {
+              this.alerticon = "success";
+              this.menssage = "Registrado!";
+            } else {
+              this.alerticon = "error";
+            }
           })
           .catch(error => console.log("error", error));
       });
@@ -244,3 +249,21 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.inputMargin {
+  margin-top: 50%;
+}
+img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  background-color: rgb(20, 20, 20);
+  user-select: none;
+}
+img {
+  height: 100%;
+}
+</style>

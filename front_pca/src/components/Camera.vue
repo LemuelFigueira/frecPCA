@@ -16,15 +16,15 @@
         <v-icon>camera</v-icon>
       </v-btn>
     </div>
-    <photos-gallery class="gallery" :photos="photos" />
+    <!-- <photos-gallery class="gallery" :photos="photos" /> -->
   </div>
 </template>
 
 <script>
-import PhotosGallery from "./PhotosGallery.vue";
+// import PhotosGallery from "./PhotosGallery.vue";
 export default {
   components: {
-    PhotosGallery
+    // PhotosGallery
   },
   data() {
     return {
@@ -122,10 +122,9 @@ export default {
 .wrapper {
   background-color: black;
   display: grid;
-  width: 100vw;
-  height: 100vh;
+  height: 100%;
   grid-template-columns: [left] 90vw [bs] 5vw [es] 5vw [right];
-  grid-template-rows: [top] 5vh [bs] 5vh [es] 60vh [middle] 10vh [bottom] 20vh [end];
+  grid-template-rows: [top] 5vh [bs] 5vh [es] 70vh [middle] 10vh [end];
   justify-items: center;
   overflow: hidden;
 }
