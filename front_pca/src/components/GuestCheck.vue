@@ -12,7 +12,7 @@
           <v-btn icon dark @click="show = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Validação de Convidado</v-toolbar-title>
+          <v-toolbar-title>Validação de Participante</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-window v-model="step" touchless>
