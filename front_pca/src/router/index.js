@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
+import GuestCheck from '../components/GuestCheck.vue'
 import Invite from '../views/Invite.vue'
 import store from '@/store'
 
@@ -24,6 +25,14 @@ const routes = [{
 }, {
   path: '*',
   redirect: '/login',
+},
+{
+  path: '/validate',
+  name: 'validate',
+  component: GuestCheck,
+  meta: {
+    requiresVisitor: true,
+  }
 },
 {
   path: '/invite/:id',

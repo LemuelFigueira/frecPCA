@@ -12,7 +12,7 @@
       </template>
       <v-card>
         <v-toolbar dark color="deep-purple">
-          <v-btn icon dark @click="show = false">
+          <v-btn icon dark @click="backHome">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Criar Evento</v-toolbar-title>
@@ -23,7 +23,7 @@
         </v-toolbar>
         <v-container>
           <v-col cols="12" md="10" xs="10" lg="10">
-            <v-file-input
+            <!-- <v-file-input
               label="Imagem do evento"
               accept="image/png, image/jpeg, image/bmp, image/jpeg"
               :rules="rules"
@@ -31,7 +31,7 @@
               filled
               prepend-icon="mdi-camera"
             ></v-file-input>
-            <p v-if="invalidImage">{{invalidImage}}</p>
+            <p v-if="invalidImage">{{invalidImage}}</p>-->
             <v-menu
               ref="menu1"
               v-model="menu1"
@@ -122,6 +122,22 @@
               ></v-select>
             </form>
           </v-col>
+          <v-snackbar
+            v-model="snackbar"
+            :bottom="y === 'bottom'"
+            :color="color"
+            :left="x === 'left'"
+            :multi-line="mode === 'multi-line'"
+            :right="x === 'right'"
+            :timeout="timeout"
+            :top="y === 'top'"
+            :vertical="mode === 'vertical'"
+          >
+            {{ text }}
+            <template>
+              <v-btn text @click="snackbar = false">Fechar</v-btn>
+            </template>
+          </v-snackbar>
         </v-container>
       </v-card>
     </v-dialog>
@@ -145,6 +161,14 @@ export default {
   },
   data() {
     return {
+      color: "",
+      mode: "",
+      snackbar: false,
+      text: "",
+      timeout: 4000,
+      created: false,
+      x: null,
+      y: "bottom",
       beginTime: null,
       menu1: false,
       modal1: false,
@@ -181,11 +205,11 @@ export default {
   methods: {
     async submit() {
       this.$v.$touch();
+
       const result = await this.$v.$anyError;
 
       let fileType = this.roomPic ? this.roomPic.type.split("/")[0] : "";
-      let picture = this.roomPic ? this.roomPic : 'no picture'
-      
+      // let picture = this.roomPic ? this.roomPic : "no picture";
 
       if (
         !result &&
@@ -196,24 +220,51 @@ export default {
         if (fileType === "") {
           this.invalidImage = "";
         }
-        var event = new FormData();
-        event.append("eventBeginTime", this.beginTime);
-        event.append("eventEndTime", this.endTime);
-        event.append("eventDistrict", this.district);
-        event.append("eventCity", this.city);
-        event.append("eventAdress", this.adress);
-        event.append("roomPicture",  picture);
-        event.append("userId",  this.userId);
-        event.append("eventName",  this.name);
-        event.append("eventParticipants", this.numberParticipants);
-        event.append("eventDescription", this.description);
-        
 
-        Event.createRoom(event).then(response => {
+        var file = this.roomPic ? this.roomPic : "";
+        console.log(this.description)
+        const newEvent = {
+          eventBeginTime: this.beginTime,
+          eventEndTime: this.endTime,
+          eventDistrict: this.district,
+          eventCity: this.city,
+          eventAdress: this.adress,
+          userId: this.userId,
+          eventName: this.name,
+          eventParticipants: this.numberParticipants,
+          eventDescription: this.description
+        };
+
+        if (file) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var binaryData = e.target.result;
+            //Converting Binary Data to base 64
+            var base64String = window.btoa(binaryData);
+
+            newEvent.roomPicture = base64String;
+          };
+          reader.onerror = function(error) {
+            alert(error);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          newEvent.roomPicture = "no picture";
+        }
+
+        Event.createRoom(newEvent).then(response => {
           response
             .json()
             .then(data => {
-              console.log(data);
+              console.log(data)
+              if (response.status === 201) {
+                this.created = true;
+                this.color = "success";
+                (this.text = "Evento criado"), (this.snackbar = true);
+              } else {
+                this.color = "error";
+                (this.text = "Erro ao criar evento"), (this.snackbar = true);
+              }
             })
             .catch(error => console.log("error", error));
         });
@@ -237,6 +288,16 @@ export default {
           this.errorMessageEndTime = "";
         }
       }
+    },
+    backHome() {
+      console.log(this.created)
+      if (this.created) {
+        this.$emit("eventCreated", true);
+      }
+     
+      this.$forceUpdate()
+      this.created = false
+      this.show = false;
     }
   },
   computed: {
@@ -247,7 +308,10 @@ export default {
         return this.visible;
       },
       set(value) {
+             
         if (!value) {
+     
+          this.created = false;
           this.$emit("close");
         }
       }

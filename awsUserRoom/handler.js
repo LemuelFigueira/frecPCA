@@ -4,6 +4,7 @@ const { "v4": uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 const multipart = require('aws-multipart-parser');
 const salt = bcrypt.genSaltSync(10)
+const utf8 = require('utf8');
 const s3bucket = new AWS.S3({
   Bucket: 'event-pics-pca',
 });
@@ -28,8 +29,9 @@ function sortByDate(a, b) {
   } else return 1;
 }
 
-module.exports.createRoom = async (event, context, callback) => {
-  const reqBody = multipart.parse(event, true)
+module.exports.createRoom = (event, context, callback) => {
+  const reqBody = JSON.parse(event.body)
+
 
   let eventId = uuidv4()
 
@@ -144,7 +146,7 @@ module.exports.createRoom = async (event, context, callback) => {
     );
   }
 
-
+  callback(null, response(201, reqBody))
 
   const room = {
     roomId: eventId,
@@ -161,8 +163,8 @@ module.exports.createRoom = async (event, context, callback) => {
     eventDescription: reqBody.eventDescription,
   }
 
-  if (reqBody.roomPicture === 'no picture'){
-    
+  if (reqBody.roomPicture === 'no picture') {
+
     return db
       .put({
         TableName: roomTable,
@@ -174,43 +176,47 @@ module.exports.createRoom = async (event, context, callback) => {
         callback(null, response(201, room));
       })
       .catch((err) => callback(null, response(err.statusCode, err)))
-      
-  }else{
-    
-    const type = reqBody.roomPicture.contentType.split('/')[1]
-  
+
+  } else {
+
+    let decodedImage = Buffer.from(reqBody.roomPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+
+    const type = reqBody.roomPicture.split(';')[0].split('/')[1]
+
+
     let s3bucket = new AWS.S3({
       Bucket: 'event-pics-pca',
     });
-  
+
     var params = {
       Bucket: 'event-pics-pca',
       Key: `${eventId}.${type}`,
-      Body: reqBody.roomPicture.content,
-      ContentType: type
+      Body: decodedImage,
+      ContentEncoding: 'base64',
+      ContentType: `image/${type}`,
     };
-    
+
     s3bucket.putObject(params, function (err, data) {
       if (err) {
         console.log('error in callback');
         console.log(err);
       } else if (data) {
-        
+
         let eventPicture = 'https://event-pics-pca.s3.amazonaws.com/' + eventId + `.${type}`
         room.roomPicture = eventPicture
-        
+
         return db
-        .put({
-          TableName: roomTable,
-          Item: room,
-          ConditionExpression: 'attribute_not_exists(id)',
-        })
-        .promise()
-        .then(() => {
-          callback(null, response(201, room));
-        })
-        .catch((err) => callback(null, response(err.statusCode, err)))
-        
+          .put({
+            TableName: roomTable,
+            Item: room,
+            ConditionExpression: 'attribute_not_exists(id)',
+          })
+          .promise()
+          .then(() => {
+            callback(null, response(201, room));
+          })
+          .catch((err) => callback(null, response(err.statusCode, err)))
+
       }
     })
   }
@@ -309,7 +315,23 @@ module.exports.updateRoom = (event, context, callback) => {
 
 // Get users room
 module.exports.userRooms = (event, context, callback) => {
-  const userId = event.pathParameters.roomId;
+  const reqBody = JSON.parse(event.body);
+  const userId = reqBody.userId
+
+  if (
+    !reqBody.userId ||
+    reqBody.userId.trim() === ''
+
+  ) {
+    return callback(
+      null,
+      response(400, {
+        error: 'userId é obrigatório.'
+      })
+    );
+  }
+
+
 
   const params = {
     FilterExpression: 'userId = :userId',
@@ -331,10 +353,14 @@ module.exports.userRooms = (event, context, callback) => {
 };
 // Delete a post
 module.exports.deleteRoom = (event, context, callback) => {
-  const id = event.pathParameters.id;
+  const reqBody = JSON.parse(event.body)
+  const roomId = reqBody.roomId;
+  const userId = reqBody.userId;
+
   const params = {
     Key: {
-      id: id
+      roomId: roomId,
+      userId : userId
     },
     TableName: roomTable
   };

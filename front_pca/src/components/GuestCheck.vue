@@ -99,7 +99,8 @@ export default {
     };
   },
   props: {
-    visible: Boolean
+    visible: Boolean,
+    roomId : String
   },
   methods: {
     onChildClick(value) {
@@ -110,11 +111,17 @@ export default {
       this.showalert = true;
       this.alerticon = "loading";
 
-      const participant = {
-        id: this.questId,
-        roomId: "c813173f-d289-4594-85f0-ec149bc0412b"
-      };
-      Participant.checkvalidity(participant).then(response => {
+      const newIMG = convertBase64ToFile(this.fromChild);
+
+      var formData = new FormData();
+      formData.append("file", newIMG);
+      formData.append("idPerson", this.questId);
+      formData.append("roomId", this.roomId);
+      formData.append("eventName", this.name);
+      // for (var value of formData.values()) {
+      //   console.log(value);
+      // }
+      Participant.checkParticipant(formData).then(response => {
         response
           .json()
           .then(data => {
@@ -161,6 +168,7 @@ export default {
 
     show: {
       get() {
+     
         return this.visible;
       },
       set(value) {

@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
-const {"v4": uuidv4} = require('uuid')
+const { "v4": uuidv4 } = require('uuid')
 const multipart = require('aws-multipart-parser');
 const shortid = require('shortid');
 
@@ -18,10 +18,10 @@ const participantTable = process.env.PARTICIPANT_TABLE
 function response(statusCode, message) {
   return {
     headers: {
-      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Headers": "*",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "*"
-  },
+    },
     statusCode: statusCode,
     body: JSON.stringify(message)
   };
@@ -34,7 +34,7 @@ function sortByDate(a, b) {
 
 module.exports.createParticipant = (event, context, callback) => {
   const reqBody = multipart.parse(event, true)
-  
+
   let userPictureKey = uuidv4()
 
   if (
@@ -74,12 +74,20 @@ module.exports.createParticipant = (event, context, callback) => {
     );
   }
 
-  // let decodedImage = Buffer.from(reqBody.userPicture.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+  let ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-  
+  let ID_LENGTH = 4;
+
+  let participantId = '';
+  for (let i = 0; i < ID_LENGTH; i++) {
+    rtn += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+  }
+
+
+
   const type = reqBody.userPicture.contentType.split('/')[1]
 
-  
+
 
   let s3bucket = new AWS.S3({
     Bucket: 'pca-knowns-users',
@@ -100,7 +108,7 @@ module.exports.createParticipant = (event, context, callback) => {
       let userPicture = 'https://pca-knowns-users.s3.amazonaws.com/' + userPictureKey + `.${type}`
 
       const participant = {
-        id: shortid.generate(),
+        id: participantId,
         createdAt: new Date().toISOString(),
         roomId: reqBody.roomId,
         name: reqBody.name,
