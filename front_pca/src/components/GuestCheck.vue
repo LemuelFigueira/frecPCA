@@ -27,7 +27,7 @@
                     :counter="100"
                   ></v-text-field>
                   <!-- <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input> -->
-                  <v-row>
+                  <v-row class="pa-3">
                     <v-btn :disabled="step === 1" text @click="step--">
                       <v-icon size="48">mdi-arrow-left-circle</v-icon>
                     </v-btn>
