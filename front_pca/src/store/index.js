@@ -10,10 +10,14 @@ export default new Vuex.Store({
         signInUrl: 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/sign',
         notAuthenticated: '',
         notCreated: '',
+        validateRoomId:'',
         userId: localStorage.getItem('userId') || null
     },
     mutations: {
-      
+
+         validateRoom(state, payload) {
+            state.validateRoomId = payload
+         },
         userAuthenticated(state, id) {
             state.userId = id;
         },
@@ -31,6 +35,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        currentEventValidate ({ commit}, payload) {
+            commit('validateRoom', payload)
+        },
         async login({
             state,
             commit

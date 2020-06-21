@@ -78,8 +78,8 @@ functions:
     handler: handler.deleteRoom
     events:
     - http:
-        path: /room/{roomId}
-        method: delete
+        path: /delete/room
+        method: post
         cors: true
  
   createUser:

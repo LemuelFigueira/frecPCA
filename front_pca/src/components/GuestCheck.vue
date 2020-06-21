@@ -98,7 +98,8 @@ export default {
     };
   },
   props: {
-    visible: Boolean
+    visible: Boolean,
+    roomId : String
   },
   methods: {
     onChildClick(value) {
@@ -126,7 +127,7 @@ export default {
       var formData = new FormData();
       formData.append("file", newIMG);
       formData.append("idPerson", this.questId);
-      formData.append("roomId", "a86d18dc-d0b8-4cd5-ac51-01f18c0c9cad");
+      formData.append("roomId", this.roomId);
       formData.append("eventName", this.name);
       // for (var value of formData.values()) {
       //   console.log(value);
@@ -151,6 +152,7 @@ export default {
 
     show: {
       get() {
+     
         return this.visible;
       },
       set(value) {
