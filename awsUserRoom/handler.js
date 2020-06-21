@@ -36,6 +36,19 @@ module.exports.createRoom = (event, context, callback) => {
   let eventId = uuidv4()
 
   if (
+    !reqBody.eventDate ||
+    reqBody.eventDate.trim() === ''
+
+  ) {
+    return callback(
+      null,
+      response(400, {
+        error: 'Evento deve ter data'
+      })
+    );
+  }
+
+  if (
     !reqBody.userId ||
     reqBody.userId.trim() === ''
 
@@ -161,6 +174,7 @@ module.exports.createRoom = (event, context, callback) => {
     eventName: reqBody.eventName,
     participants: reqBody.eventParticipants,
     eventDescription: reqBody.eventDescription,
+    eventDate: reqBody.eventDate,
   }
 
   if (reqBody.roomPicture === 'no picture') {
