@@ -184,7 +184,7 @@ export default {
       let baseUrl = `https://vuejs-teste.s3-sa-east-1.amazonaws.com/index.html#/invite/${roomId}`;
       try {
         baseUrl.select();
-        let successful = document.execCommand("copy");
+        // let successful = document.execCommand("copy");
         this.color = "success";
         this.text = "Url do evento copiada";
         this.snackbar = true;

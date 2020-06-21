@@ -16,7 +16,7 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-window v-model="step" touchless>
-          <v-window-item :value="1">
+          <v-window-item class="inputMargin" :value="1">
             <v-container>
               <v-col cols="12" md="10" xs="10" lg="10">
                 <form>
