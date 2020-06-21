@@ -27,14 +27,14 @@
                   <v-container>
                     <v-col cols="12" md="10" xs="10" lg="10">
                       <v-card class="mx-auto" max-width="400">
-                        <v-img class="white--text align-end" height="200px" :src="roomPicture">
+                        <v-img class="white--text align-end" height="200px" src="../assets/meca.jpg">
                           <v-card-title>{{ eventname }}</v-card-title>
                         </v-img>
 
                         <!-- <v-card-title>{{ eventname }}</v-card-title> -->
                         <v-card-subtitle
                           class="pb-0 text-left"
-                        >{{ adress }},{{ city }},{{ district }}</v-card-subtitle>
+                        >Endereço: {{ adress }},{{ city }},{{ district }}</v-card-subtitle>
 
                         <v-card-text class="text-left">
                           <div class="my-4">{{ description }}</div>
@@ -45,14 +45,14 @@
                         <v-card-title>Hora do Evento</v-card-title>
 
                         <v-card-text>
-                          <v-chip-group v-model="selection" column>
-                            <v-chip>Hora de inicio: {{ beginTime }}</v-chip>
+                          <v-chip-group>
+                            <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ beginTime }}</v-chip>
 
-                            <v-chip>Hora de termino: {{ endTime }}</v-chip>
+                            <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ endTime }}</v-chip>
                           </v-chip-group>
                         </v-card-text>
 
-                        <v-card-actions>
+                        <v-card-actions class="justify-center">
                           <v-btn
                             color="deep-purple lighten-2"
                             :disabled="step === 3"
@@ -140,6 +140,9 @@
                     <v-col cols="12" md="10" xs="10" lg="10">
                       <SweetAlertIcons v-show="showalert" :icon="alerticon" />
                       <h2>{{ menssage }}</h2>
+                      <br>
+                      <h3 v-show="showmsg">Seu Código</h3>
+                      <h4>{{ idCode }}</h4>
                     </v-col>
                   </v-container>
                 </v-row>
@@ -174,6 +177,7 @@ export default {
       fromChild: "",
       showModal: false,
       showalert: false,
+      showmsg: false,
       eventname: "",
       description: "",
       adress: "",
@@ -212,12 +216,15 @@ export default {
       Participant.createParticipant(formData).then(response => {
         response
           .json()
-          .then(() => {
+          .then(data => {
             if (response.status == 201) {
               this.alerticon = "success";
               this.menssage = "Registrado!";
+              this.showmsg = true;
+              this.idCode = data;
             } else {
               this.alerticon = "error";
+              this.menssage = "Erro no Registro!";
             }
           })
           .catch(error => console.log("error", error));
