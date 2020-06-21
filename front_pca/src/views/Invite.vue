@@ -212,8 +212,8 @@ export default {
       Participant.createParticipant(formData).then(response => {
         response
           .json()
-          .then(data => {
-            if (data === "Registrado") {
+          .then(() => {
+            if (response.status == 201) {
               this.alerticon = "success";
               this.menssage = "Registrado!";
             } else {
