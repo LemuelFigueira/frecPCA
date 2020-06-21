@@ -3,8 +3,13 @@
     <v-app id="inspire">
       <v-app id="inspire">
         <CreateRoom v-on:eventCreated="eventEmit" :visible="showModal" @close="showModal=false" />
-        <GuestCheck v-on:eventCreated="eventEmit" :roomId="roomIdValidation" :visible="showModalValidation" @close="showModalValidation=false" />
-   
+        <GuestCheck
+          v-on:eventCreated="eventEmit"
+          :roomId="roomIdValidation"
+          :visible="showModalValidation"
+          @close="showModalValidation=false"
+        />
+
         <v-app-bar app color="deep-purple" dark>
           <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -50,9 +55,14 @@
                     <p style="white-space: pre-line;">Participantes: {{something.participants}}</p>
                   </v-card-text>
 
-                  <v-card-actions>
-                    <v-btn x-small color="orange" text>Copiar Url</v-btn>
-                    <v-btn x-small color="orange" @click="validateEvent(something.roomId)" text>Validar</v-btn>
+                  <v-card-actions class="justify-center">
+                    <v-btn x-small color="orange" @click="copyUrl(something.roomId)" text>Copiar Url</v-btn>
+                    <v-btn
+                      x-small
+                      color="orange"
+                      @click="validateEvent(something.roomId)"
+                      text
+                    >Validar</v-btn>
                     <v-btn
                       x-small
                       color="orange"
@@ -101,8 +111,8 @@ export default {
   },
   data() {
     return {
-      showModalValidation:false,
-      roomIdValidation:'',
+      showModalValidation: false,
+      roomIdValidation: "",
       color: "",
       mode: "",
       snackbar: false,
@@ -138,7 +148,7 @@ export default {
         response
           .json()
           .then(data => {
-            console.log(data)
+            console.log(data);
             this.items = data;
           })
           .catch(error => console.log("error", error));
@@ -157,8 +167,8 @@ export default {
           .then(() => {
             if (response.status === 200) {
               this.color = "success";
-              this.text = "Evento excluído"
-              this.snackbar = true
+              this.text = "Evento excluído";
+              this.snackbar = true;
               this.getUserEvents();
             }
           })
@@ -166,10 +176,22 @@ export default {
       });
     },
     validateEvent(roomId) {
-      this.roomIdValidation = roomId
-      this.$store.dispatch('currentEventValidate',roomId)
-      this.showModalValidation = true
-    
+      this.roomIdValidation = roomId;
+      this.$store.dispatch("currentEventValidate", roomId);
+      this.showModalValidation = true;
+    },
+    copyUrl(roomId) {
+      let baseUrl = `https://vuejs-teste.s3-sa-east-1.amazonaws.com/index.html#/invite/${roomId}`;
+      try {
+        baseUrl.select();
+        let successful = document.execCommand("copy");
+        this.color = "success";
+        this.text = "Url do evento copiada";
+        this.snackbar = true;
+        this.getUserEvents();
+      } catch (err) {
+        alert("Oops, unable to copy");
+      }
     }
   },
   created() {
