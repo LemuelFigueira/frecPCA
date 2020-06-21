@@ -80,7 +80,7 @@ module.exports.createParticipant = (event, context, callback) => {
 
   let participantId = '';
   for (let i = 0; i < ID_LENGTH; i++) {
-    rtn += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+    participantId += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
   }
 
 
