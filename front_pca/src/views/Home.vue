@@ -44,31 +44,37 @@
                     <v-card-title>{{something.eventName}}</v-card-title>
                   </v-img>
 
-                  <v-card-subtitle class="pb-0">{{something.eventDescription}}</v-card-subtitle>
+                  <v-card-subtitle class="pb-0 text-left">{{something.eventAdress}},{{something.eventDistrict}},{{something.eventCity}}</v-card-subtitle>
 
-                  <v-card-text class="text--primary">
-                    <p style="white-space: pre-line;">Começa às: {{something.eventBeginTime}}</p>
-                    <p style="white-space: pre-line;">Termina às: {{something.eventEndTime}}</p>
-                    <p
-                      style="white-space: pre-line;"
-                    >Endereço: {{something.eventAdress}} - {{something.eventDistrict}} - {{something.eventCity}}</p>
-                    <p style="white-space: pre-line;">Participantes: {{something.participants}}</p>
+                  <v-card-text class="text--primary text-left">
+                    <div class="my-4">{{something.eventDescription}}</div>
                   </v-card-text>
 
+                  <v-divider class="mx-4"></v-divider>
+
+                        <v-card-text>
+                          <v-chip-group column>
+                            <v-chip color="primary" text-color="white"><v-icon left>mdi-calendar-check</v-icon> {{ something.eventDate }}</v-chip>
+                            <v-chip color="primary" text-color="white"><v-icon left>mdi-account-circle</v-icon> {{ something.participants }} participantes</v-chip>
+                            <row>
+                            <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ something.eventBeginTime }}</v-chip>
+                            <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ something.eventEndTime }}</v-chip>
+                            </row>
+                          </v-chip-group>
+                        </v-card-text> 
                   <v-card-actions class="justify-center">
-                    <v-btn x-small color="orange" @click="copyUrl(something.roomId)" text>Copiar Url</v-btn>
-                    <v-btn
-                      x-small
-                      color="orange"
+                    <v-btn color="deep-purple" @click="copyUrl(something.roomId)" text><v-icon size="30"  >mdi-share-variant</v-icon></v-btn>
+                    <v-btn                       
+                      color="deep-purple"
                       @click="validateEvent(something.roomId)"
                       text
-                    >Validar</v-btn>
+                    ><v-icon size="30">mdi-account-check</v-icon></v-btn>
                     <v-btn
-                      x-small
-                      color="orange"
+                      
+                      color="deep-purple"
                       @click="deleteEvent(something.roomId)"
                       text
-                    >Excluir Evento</v-btn>
+                    ><v-icon size="30">mdi-trash-can-outline</v-icon></v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -183,14 +189,8 @@ export default {
     },
     copyUrl(roomId) {
       let baseUrl = `https://vuejs-teste.s3-sa-east-1.amazonaws.com/index.html#/invite/${roomId}`;
-<<<<<<< HEAD
-      try {
-        baseUrl.select();
-        // let successful = document.execCommand("copy");
-=======
       let result = this.$clipboard(baseUrl);
       if (result) {
->>>>>>> 2c7cf0a3a0d62ff9014a12bee685ba0c767f4525
         this.color = "success";
         this.text = "Url do evento copiada";
         this.y = 'top'

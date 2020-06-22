@@ -32,7 +32,7 @@
                       <v-icon size="48">mdi-arrow-left-circle</v-icon>
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn :disabled="step === 4" text @click="step++">
+                    <v-btn :disabled="step === 4" color="deep-purple" text @click="step++">
                       <v-icon size="48">mdi-arrow-right-circle</v-icon>
                     </v-btn>
                   </v-row>

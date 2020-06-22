@@ -34,7 +34,7 @@
                         <!-- <v-card-title>{{ eventname }}</v-card-title> -->
                         <v-card-subtitle
                           class="pb-0 text-left"
-                        >Endereço: {{ adress }},{{ city }},{{ district }}</v-card-subtitle>
+                        >{{ adress }},{{ city }},{{ district }}</v-card-subtitle>
 
                         <v-card-text class="text-left">
                           <div class="my-4">{{ description }}</div>
@@ -42,13 +42,15 @@
 
                         <v-divider class="mx-4"></v-divider>
 
-                        <v-card-title>Hora do Evento</v-card-title>
+                        <!-- <v-card-title>Dia/Hora do Evento</v-card-title> -->
 
                         <v-card-text>
-                          <v-chip-group>
+                          <v-chip-group column>
+                            <v-chip color="primary" text-color="white"><v-icon left>mdi-calendar-check</v-icon> {{ eventdate }}</v-chip>
+                            <row>
                             <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ beginTime }}</v-chip>
-
                             <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ endTime }}</v-chip>
+                            </row>
                           </v-chip-group>
                         </v-card-text>
 
@@ -83,11 +85,11 @@
                         ></v-text-field>
                         <!-- <v-file-input v-model="roomPic" prepend-icon="mdi-camera"></v-file-input> -->
                         <v-row>
-                          <v-btn :disabled="step === 1" text @click="step--">
+                          <v-btn color="deep-purple" :disabled="step === 1" text @click="step--">
                             <v-icon size="48">mdi-arrow-left-circle</v-icon>
                           </v-btn>
                           <v-spacer></v-spacer>
-                          <v-btn :disabled="step === 3" text @click="step++">
+                          <v-btn color="deep-purple" :disabled="step === 3" text @click="step++">
                             <v-icon size="48">mdi-arrow-right-circle</v-icon>
                           </v-btn>
                         </v-row>
@@ -118,11 +120,11 @@
                             <img :src="fromChild" />
                           </div>
                         </template>
-                        <v-btn :disabled="step === 1" text @click="step--">
+                        <v-btn color="deep-purple" :disabled="step === 1" text @click="step--">
                           <v-icon size="48">mdi-arrow-left-circle</v-icon>
                         </v-btn>
                         <v-spacer></v-spacer>
-                        <v-btn :disabled="step === 3" text @click="register">
+                        <v-btn color="deep-purple" :disabled="step === 3" text @click="register">
                           <v-icon size="48">mdi-arrow-right-circle</v-icon>
                         </v-btn>
                       </v-row>
@@ -185,6 +187,7 @@ export default {
       district: "",
       beginTime: "",
       endTime: "",
+      eventdate: "",
       guestPic: "",
       name: "",
       step: 1
@@ -249,6 +252,7 @@ export default {
           this.description = data[0]["eventDescription"];
           this.beginTime = data[0]["eventBeginTime"];
           this.endTime = data[0]["eventEndTime"];
+          this.eventdate = data[0]["eventDate"];
           console.log(data);
         })
         .catch(error => console.log("error", error));

@@ -45,15 +45,10 @@ export default {
     async StartRecording(facingMode) {
       this.facingMode = facingMode;
       let video = this.$refs.video;
-      // this.mediaStream = await navigator.mediaDevices.getUserMedia({
-      //   video: { facingMode: facingMode }
-      // });
-      this.mediaStream = await navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(stream => {
-          const videoPlayer = video;
-          videoPlayer.srcObject = stream;
-        });
+      this.mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facingMode }
+      });
+      video.srcObject = this.mediaStream;
       return await video.play();
     },
     async TakePhoto() {
