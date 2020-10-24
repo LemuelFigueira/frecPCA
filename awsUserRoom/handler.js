@@ -419,7 +419,7 @@ module.exports.createUser = (event, context, callback) => {
 
   let hash = bcrypt.hashSync(reqBody.password, salt)
   const user = {
-    id: uuid(),
+    id: uuidv4(),
     createdAt: new Date().toISOString(),
     username: reqBody.username,
     password: hash,
