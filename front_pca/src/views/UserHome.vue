@@ -11,86 +11,23 @@
         />
 
         <v-app-bar app color="deep-purple" dark>
-          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
-
-          <v-btn v-if="isAuthenticated" style="left:10%"  light small color="white" @click="createRoom">
-            Criar evento
+          <v-btn class="mx-3" fab dark small color="white" @click="createRoom">
+            <v-icon dark color="deep-purple">mdi-plus</v-icon>
           </v-btn>
-
-          <v-btn v-if="!isAuthenticated" style="left:15%" light small color="white" to="/login">
-            Logar
-          </v-btn>
-
           <v-spacer></v-spacer>
+          <v-menu left bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="this.logOut">Sair</v-list-item>
+            </v-list>
+          </v-menu>
         </v-app-bar>
-
-        <v-navigation-drawer v-model="drawer" absolute temporary class="text-left">
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Menu Evento
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>          
-          <v-list nav dense>
-            <v-list-item-group
-              v-model="group"
-              active-class="deep-purple--text text--accent-4"
-            >
-              <v-list-item>
-                <v-list-item-title>Festa e Show</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Arte e Cultura</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Congresso e seminário</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Tecnologia</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Outros</v-list-item-title>
-              </v-list-item>
-
-              <v-divider></v-divider>
-
-              <router-link to="/home">
-                <v-list-item v-if="isAuthenticated">
-                  <v-list-item-title>Meus eventos</v-list-item-title>
-                </v-list-item>
-              </router-link> 
-
-              <router-link to="/login">
-                <v-list-item v-if="!isAuthenticated">
-                  <v-list-item-title>Logar</v-list-item-title>
-                </v-list-item>
-              </router-link>
-
-              <router-link to="/login">
-                <v-list-item v-if="!isAuthenticated">
-                  <v-list-item-title>Cadastrar</v-list-item-title>
-                </v-list-item>
-              </router-link>
-
-              <v-list-item v-if="isAuthenticated">
-                <v-list-item-title @click="sair()">
-                  <v-icon small>mdi-exit-to-app</v-icon>
-                  Sair
-                </v-list-item-title>
-              </v-list-item>
-
-            </v-list-item-group>
-          </v-list>
-
-        </v-navigation-drawer>
-    
         <v-content>
           <v-container class="fill-height" fluid>
             <v-row align="center" justify="center">
@@ -102,18 +39,30 @@
                 v-for="(something, index) in this.items"
                 :key="index"
               >
-              <router-link :to="{name: 'EventPage',params: { id: something.roomId }, query: { room: something },}">
-                <v-card class="mx-auto" max-width="310">
-                  <v-img style="height:130px" class="white--text align-end" src="../assets/meca.jpg">
+                <v-card class="mx-auto" max-width="400">
+                  <v-img class="white--text align-end" src="../assets/meca.jpg">
+                    <v-card-title>{{something.eventName}}</v-card-title>
                   </v-img>
 
-                  <v-card-subtitle class="pb-0 text-left">{{ something.eventDate }} | {{ something.eventBeginTime }}</v-card-subtitle>
-                  
-                  <v-card-title class="pt-0">{{something.eventName}}</v-card-title>
+                  <v-card-subtitle class="pb-0 text-left">{{something.eventAdress}},{{something.eventDistrict}},{{something.eventCity}}</v-card-subtitle>
 
-                  <v-card-subtitle class="text-left">{{something.eventDistrict}}, {{something.eventCity}}</v-card-subtitle>
+                  <v-card-text class="text--primary text-left">
+                    <div class="my-4">{{something.eventDescription}}</div>
+                  </v-card-text>
 
-                  <!-- <v-card-actions class="justify-center">
+                  <v-divider class="mx-4"></v-divider>
+
+                        <v-card-text>
+                          <v-chip-group column>
+                            <v-chip color="primary" text-color="white"><v-icon left>mdi-calendar-check</v-icon> {{ something.eventDate }}</v-chip>
+                            <v-chip color="primary" text-color="white"><v-icon left>mdi-account-circle</v-icon> {{ something.participants }} participantes</v-chip>
+                            <row>
+                            <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ something.eventBeginTime }}</v-chip>
+                            <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ something.eventEndTime }}</v-chip>
+                            </row>
+                          </v-chip-group>
+                        </v-card-text> 
+                  <v-card-actions class="justify-center">
                     <v-btn color="deep-purple" @click="copyUrl(something.roomId)" text><v-icon size="30"  >mdi-share-variant</v-icon></v-btn>
                     <v-btn                       
                       color="deep-purple"
@@ -126,9 +75,8 @@
                       @click="deleteEvent(something.roomId)"
                       text
                     ><v-icon size="30">mdi-trash-can-outline</v-icon></v-btn>
-                  </v-card-actions> -->
+                  </v-card-actions>
                 </v-card>
-                </router-link>
               </v-col>
             </v-row>
           </v-container>
@@ -155,7 +103,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState, mapGetters } from "vuex";
+import { mapActions, mapState } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
 import Event from "@/repositories/Event";
 import GuestCheck from "../components/GuestCheck.vue";
@@ -169,8 +117,6 @@ export default {
   },
   data() {
     return {
-      drawer: false,
-      group: null,
       showModalValidation: false,
       roomIdValidation: "",
       color: "",
@@ -186,22 +132,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userId"]),
-    ...mapGetters(['isAuthenticated']),
+    ...mapState(["userId"])
   },
-    watch: {
-      group () {
-        this.drawer = false
-      },
-    },  
   methods: {
     ...mapActions(["logOut"]),
     createRoom() {
       this.showModal = true;
-    },
-    sair(){
-      this.logOut()
-      this.drawer = false
     },
     eventEmit() {
       let user = {
@@ -210,8 +146,11 @@ export default {
       this.getUserEvents(user);
     },
 
-    getAllEvents() {
-      Event.getAllRooms().then(response => {
+    getUserEvents() {
+      let user = {
+        userId: this.userId
+      };
+      Event.getRooms(user).then(response => {
         response
           .json()
           .then(data => {
@@ -265,7 +204,7 @@ export default {
     }
   },
   created() {
-    this.getAllEvents();
+    this.getUserEvents();
   },
   mounted() {}
 };

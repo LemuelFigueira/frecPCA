@@ -60,6 +60,22 @@ export default {
             body:  JSON.stringify(user)
         }
         return fetch(api, params)
+    },
+
+    async getAllRooms() {
+
+        const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/rooms'
+        
+        const params = {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+                
+            },
+            body:  JSON.stringify()
+        }
+        return fetch(api, params)
     }
 
 }

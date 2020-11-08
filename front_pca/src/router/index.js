@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
+import UserHome from '../views/UserHome.vue'
+import EventPage from '../views/EventPage.vue'
 import GuestCheck from '../components/GuestCheck.vue'
 import Invite from '../views/Invite.vue'
 import store from '@/store'
@@ -16,15 +18,24 @@ const routes = [{
     requiresVisitor: true,
   }
 }, {
+  path: '/main',
+  name: 'main',
+  component: Home,
+  meta: {
+    requiresVisitor: true,
+  }
+},
+{
+  path: '*',
+  redirect: '/main',
+},
+{
   path: '/home',
   name: 'home',
-  component: Home,
+  component: UserHome,
   meta: {
     requiresAuth: true,
   }
-}, {
-  path: '*',
-  redirect: '/login',
 },
 {
   path: '/validate',
@@ -41,7 +52,17 @@ const routes = [{
   meta: {
     requiresVisitor: true,
   }
-}]
+  ,
+},
+{
+  path: '/event/:id',
+  name: 'EventPage',
+  component: EventPage,
+  meta: {
+    requiresVisitor: true,
+  }
+},
+]
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
@@ -67,7 +88,7 @@ router.beforeEach((to, from, next) => {
     isAuthenticated().then(() => {
       if (store.state.userId) {
         next({
-          name: 'home',
+
         })
       } else {
         next()
