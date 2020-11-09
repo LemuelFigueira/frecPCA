@@ -16,7 +16,8 @@
       </v-select>
     </div>
 
-    <!-- ### TODO : CHANGE TIME TO DATE -->
+    ### TODO : CHANGE TIME TO DATE >>>>>>>
+
     <div class="time-box">
       <label class="time-label">Horário</label>
       <vuetify-time-select class="time"> </vuetify-time-select>
