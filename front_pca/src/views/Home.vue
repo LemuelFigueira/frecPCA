@@ -107,9 +107,9 @@
                   <v-img style="height:130px" class="white--text align-end" src="../assets/meca.jpg">
                   </v-img>
 
-                  <v-card-subtitle class="pb-0 text-left">{{ something.eventDate }} | {{ something.eventBeginTime }}</v-card-subtitle>
+                  <v-card-title class="pb-5">{{something.eventName}}</v-card-title>
                   
-                  <v-card-title class="pt-0">{{something.eventName}}</v-card-title>
+                  <v-card-subtitle class="pt-1 pb-0 text-left">{{ something.eventDate }} | {{ something.eventBeginTime }}</v-card-subtitle>
 
                   <v-card-subtitle class="text-left">{{something.eventDistrict}}, {{something.eventCity}}</v-card-subtitle>
 
