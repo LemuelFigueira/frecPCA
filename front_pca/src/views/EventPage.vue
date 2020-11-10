@@ -1,24 +1,86 @@
 <template>
   <div id="app" class="mx-auto">
     <v-app id="inspire">
-      <v-app-bar app color="deep-purple" dark>
-        <v-toolbar-title>Eventos</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn class="mx-3" fab dark small color="white" @click="createRoom">
-          <v-icon dark color="deep-purple">mdi-plus</v-icon>
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-menu left bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item @click="this.logOut">Sair</v-list-item>
+        <v-app-bar app color="deep-purple" dark>
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>Eventos</v-toolbar-title>
+          <v-spacer></v-spacer>
+
+          <v-btn v-if="isAuthenticated" style="left:10%"  light small color="white" @click="createRoom">
+            Criar evento
+          </v-btn>
+
+          <v-btn v-if="!isAuthenticated" style="left:15%" light small color="white" to="/login">
+            Logar
+          </v-btn>
+
+          <v-spacer></v-spacer>
+        </v-app-bar>
+
+        <v-navigation-drawer v-model="drawer" absolute temporary class="text-left">
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="title">
+                Menu Evento
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>          
+          <v-list nav dense>
+            <v-list-item-group
+              v-model="group"
+              active-class="deep-purple--text text--accent-4"
+            >
+              <v-list-item>
+                <v-list-item-title>Festa e Show</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title>Arte e Cultura</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title>Congresso e seminário</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title>Tecnologia</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title>Outros</v-list-item-title>
+              </v-list-item>
+
+              <v-divider></v-divider>
+
+              <router-link to="/home">
+                <v-list-item v-if="isAuthenticated">
+                  <v-list-item-title>Meus eventos</v-list-item-title>
+                </v-list-item>
+              </router-link> 
+
+              <router-link to="/login">
+                <v-list-item v-if="!isAuthenticated">
+                  <v-list-item-title>Logar</v-list-item-title>
+                </v-list-item>
+              </router-link>
+
+              <router-link to="/login">
+                <v-list-item v-if="!isAuthenticated">
+                  <v-list-item-title>Cadastrar</v-list-item-title>
+                </v-list-item>
+              </router-link>
+
+              <v-list-item v-if="isAuthenticated">
+                <v-list-item-title @click="sair()">
+                  <v-icon small>mdi-exit-to-app</v-icon>
+                  Sair
+                </v-list-item-title>
+              </v-list-item>
+
+            </v-list-item-group>
           </v-list>
-        </v-menu>
-      </v-app-bar>
+
+        </v-navigation-drawer>
       <v-content>
         <v-container class="fill-height mx-auto" fluid>
 
@@ -30,13 +92,13 @@
                 <v-card-subtitle class="pb-0 text-left">{{event.eventAdress}},{{event.eventDistrict}},{{event.eventCity}}</v-card-subtitle>
 
                 <v-card-text>
-                  <v-chip-group column>
-                    <v-chip color="primary" text-color="white"><v-icon left>mdi-calendar-check</v-icon> {{ event.eventDate }}</v-chip>
-                    <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ event.eventBeginTime }}</v-chip>
+                  <v-chip-group column >
+                    <v-chip color="primary" text-color="white" class="mx-auto"><v-icon left>mdi-calendar-check</v-icon> {{ event.eventDate }}</v-chip>
                     <!-- <v-chip color="primary" text-color="white"><v-icon left>mdi-account-circle</v-icon> {{ event.participants }} participantes</v-chip> -->
-                    <!-- <row> -->
-                    <!-- <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ event.eventEndTime }}</v-chip> -->
-                    <!-- </row> -->
+                    <row class="mx-auto">
+                    <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ event.eventBeginTime }}</v-chip>
+                    <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ event.eventEndTime }}</v-chip>
+                    </row>
                   </v-chip-group>
                 </v-card-text> 
 
@@ -74,7 +136,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 import Event from "@/repositories/Event";
 
 export default {
@@ -83,6 +145,8 @@ export default {
   },
   data() {
     return {
+      drawer: false,
+      group: null,
       showModalValidation: false,
       roomIdValidation: "",
       color: "",
@@ -98,12 +162,17 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userId"])
+    ...mapState(["userId"]),
+    ...mapGetters(['isAuthenticated']),
   },
   methods: {
     ...mapActions(["logOut"]),
     createRoom() {
       this.showModal = true;
+    },
+    sair(){
+      this.logOut()
+      this.drawer = false
     },
     eventEmit() {
       let user = {

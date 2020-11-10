@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <v-app id="inspire">
         <CreateRoom v-on:eventCreated="eventEmit" :visible="showModal" @close="showModal=false" />
         <GuestCheck
           v-on:eventCreated="eventEmit"
@@ -150,7 +149,6 @@
           </v-snackbar>
         </v-content>
         <v-footer color="deep-purple" app></v-footer>
-      </v-app>
     </v-app>
   </div>
 </template>
