@@ -1,5 +1,10 @@
 <template>
   <div class="filter-box">
+    <div class="filter-title">
+      <span>
+        Filtros
+      </span>
+    </div>
     <div class="category-box">
       <v-select
         class="select-category"
@@ -12,18 +17,20 @@
           'Show ao vivo',
           'Beleza e Moda',
         ]"
+        :required="!selected"
       >
       </v-select>
     </div>
 
     <!-- ### TODO : CHANGE TIME TO DATE >>>>>>> -->
 
-    <div class="time-box">
-      <label class="time-label">Horário</label>
-      <vuetify-time-select class="time"> </vuetify-time-select>
+    <div class="date-box">
+      <label class="date-label">Data: </label>
+      <!-- <vuetify-date-select class="date"> </vuetify-date-select> -->
+      <input type="date" class="date" />
     </div>
 
-    <button class="filter-button">
+    <button type="submit" class="filter-button">
       Filtrar
     </button>
   </div>
@@ -43,24 +50,46 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&display=swap");
+
 .filter-box {
+  height: 60vh;
   width: 100%;
   flex-direction: column;
-  margin: 0 auto;
+  margin-top: -3em;
+  margin-bottom: -6em;
+  margin-top: -2.3em;
+  margin-bottom: -5em;
+
+  padding-top: 30px;
   align-items: center;
   justify-content: center;
   align-content: center;
   display: flex;
+  background-color: #9932cc;
+}
+
+.filter-title {
+  font: 700 3rem Archivo;
+  color: #fff;
+
+  margin: 0 auto;
 }
 
 .category-box {
   width: 90%;
   height: 5em;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border: 1px solid #888;
-  border-radius: 10px;
+  border-radius: 0.8rem;
+  background-color: #fff;
+
+  margin-top: 2.5em;
+  padding-top: 20px;
 }
 .category-box .select-category {
   width: 80%;
@@ -69,7 +98,7 @@ export default {
   padding-right: 10px;
 }
 
-.time-box {
+.date-box {
   width: 90%;
   height: 5em;
   display: flex;
@@ -79,17 +108,23 @@ export default {
   align-content: space-between;
 
   flex-direction: row;
-  outline: 0;
   padding: 0 1.6rem;
   background-color: #fff;
 
   margin-top: 1em;
-
-  border-radius: 10px;
+  border-radius: 0.8rem;
   border: 1px solid #888;
 }
 
-.time-box .time-label {
+.date-box .date {
+  background-color: blueviolet;
+  color: #fff;
+  border-radius: 0.8em;
+  margin-left: -40px;
+  padding: 2px 10px;
+}
+
+.date-box .date-label {
   font-size: 1.5em;
 
   margin-right: 50px;
@@ -109,7 +144,8 @@ export default {
   justify-content: center;
   text-decoration: none;
   transition: background-color 0.2s;
-  margin-top: 3.2rem;
+  margin-top: 2rem;
+  margin-bottom: 0em;
 }
 
 .filter-button:hover {

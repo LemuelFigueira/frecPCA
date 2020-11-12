@@ -14,7 +14,7 @@
           @close="showModalValidation = false"
         />
 
-        <v-app-bar app color="deep-purple" dark>
+        <v-app-bar class="home-header" app color="#bb22dd">
           <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn class="mx-3" fab dark small color="white" @click="createRoom">
@@ -33,7 +33,7 @@
           </v-menu>
         </v-app-bar>
         <v-content>
-          <EventFilter />
+          <EventFilter class="event-filter" />
 
           <v-container class="fill-height" fluid>
             <v-row align="center" justify="center">
@@ -125,7 +125,7 @@
             </template>
           </v-snackbar>
         </v-content>
-        <v-footer color="deep-purple" app></v-footer>
+        <v-footer color="#bb22dd" app></v-footer>
       </v-app>
     </v-app>
   </div>
@@ -240,3 +240,21 @@ export default {
   mounted() {},
 };
 </script>
+
+<style scoped>
+div #app {
+  background-color: #000;
+  width: 100%;
+}
+
+.home-header {
+  width: 100vw;
+  color: #fff;
+  background-color: #bb22dd;
+}
+
+.event-filter {
+  height: 60vh;
+  vertical-align: baseline;
+}
+</style>
