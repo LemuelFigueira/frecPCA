@@ -2,15 +2,19 @@
   <div id="app">
     <v-app id="inspire">
       <v-app id="inspire">
-        <CreateRoom v-on:eventCreated="eventEmit" :visible="showModal" @close="showModal=false" />
+        <CreateRoom
+          v-on:eventCreated="eventEmit"
+          :visible="showModal"
+          @close="showModal = false"
+        />
         <GuestCheck
           v-on:eventCreated="eventEmit"
           :roomId="roomIdValidation"
           :visible="showModalValidation"
-          @close="showModalValidation=false"
+          @close="showModalValidation = false"
         />
 
-        <v-app-bar app color="deep-purple" dark>
+        <v-app-bar class="home-header" app color="#bb22dd">
           <v-toolbar-title>Eventos</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn class="mx-3" fab dark small color="white" @click="createRoom">
@@ -29,6 +33,8 @@
           </v-menu>
         </v-app-bar>
         <v-content>
+          <EventFilter class="event-filter" />
+
           <v-container class="fill-height" fluid>
             <v-row align="center" justify="center">
               <v-col
@@ -41,40 +47,62 @@
               >
                 <v-card class="mx-auto" max-width="400">
                   <v-img class="white--text align-end" src="../assets/meca.jpg">
-                    <v-card-title>{{something.eventName}}</v-card-title>
+                    <v-card-title>{{ something.eventName }}</v-card-title>
                   </v-img>
 
-                  <v-card-subtitle class="pb-0 text-left">{{something.eventAdress}},{{something.eventDistrict}},{{something.eventCity}}</v-card-subtitle>
+                  <v-card-subtitle class="pb-0 text-left"
+                    >{{ something.eventAdress }},{{
+                      something.eventDistrict
+                    }},{{ something.eventCity }}</v-card-subtitle
+                  >
 
                   <v-card-text class="text--primary text-left">
-                    <div class="my-4">{{something.eventDescription}}</div>
+                    <div class="my-4">{{ something.eventDescription }}</div>
                   </v-card-text>
 
                   <v-divider class="mx-4"></v-divider>
 
-                        <v-card-text>
-                          <v-chip-group column>
-                            <v-chip color="primary" text-color="white"><v-icon left>mdi-calendar-check</v-icon> {{ something.eventDate }}</v-chip>
-                            <v-chip color="primary" text-color="white"><v-icon left>mdi-account-circle</v-icon> {{ something.participants }} participantes</v-chip>
-                            <row>
-                            <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ something.eventBeginTime }}</v-chip>
-                            <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ something.eventEndTime }}</v-chip>
-                            </row>
-                          </v-chip-group>
-                        </v-card-text> 
+                  <v-card-text>
+                    <v-chip-group column>
+                      <v-chip color="primary" text-color="white"
+                        ><v-icon left>mdi-calendar-check</v-icon>
+                        {{ something.eventDate }}</v-chip
+                      >
+                      <v-chip color="primary" text-color="white"
+                        ><v-icon left>mdi-account-circle</v-icon>
+                        {{ something.participants }} participantes</v-chip
+                      >
+                      <row>
+                        <v-chip color="green" text-color="white"
+                          ><v-icon left>mdi-alarm-check</v-icon>Inicio:
+                          {{ something.eventBeginTime }}</v-chip
+                        >
+                        <v-chip color="red" text-color="white"
+                          ><v-icon left>mdi-alarm-check</v-icon>Fim:
+                          {{ something.eventEndTime }}</v-chip
+                        >
+                      </row>
+                    </v-chip-group>
+                  </v-card-text>
                   <v-card-actions class="justify-center">
-                    <v-btn color="deep-purple" @click="copyUrl(something.roomId)" text><v-icon size="30"  >mdi-share-variant</v-icon></v-btn>
-                    <v-btn                       
+                    <v-btn
+                      color="deep-purple"
+                      @click="copyUrl(something.roomId)"
+                      text
+                      ><v-icon size="30">mdi-share-variant</v-icon></v-btn
+                    >
+                    <v-btn
                       color="deep-purple"
                       @click="validateEvent(something.roomId)"
                       text
-                    ><v-icon size="30">mdi-account-check</v-icon></v-btn>
+                      ><v-icon size="30">mdi-account-check</v-icon></v-btn
+                    >
                     <v-btn
-                      
                       color="deep-purple"
                       @click="deleteEvent(something.roomId)"
                       text
-                    ><v-icon size="30">mdi-trash-can-outline</v-icon></v-btn>
+                      ><v-icon size="30">mdi-trash-can-outline</v-icon></v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -97,7 +125,7 @@
             </template>
           </v-snackbar>
         </v-content>
-        <v-footer color="deep-purple" app></v-footer>
+        <v-footer color="#bb22dd" app></v-footer>
       </v-app>
     </v-app>
   </div>
@@ -107,13 +135,16 @@ import { mapActions, mapState } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
 import Event from "@/repositories/Event";
 import GuestCheck from "../components/GuestCheck.vue";
+import EventFilter from "../components/EventeFilter.vue";
+
 export default {
   props: {
-    source: String
+    source: String,
   },
   components: {
     CreateRoom,
-    GuestCheck
+    GuestCheck,
+    EventFilter,
   },
   data() {
     return {
@@ -126,13 +157,13 @@ export default {
       timeout: 4000,
       created: false,
       x: null,
-      y: '',
+      y: "",
       showModal: false,
-      items: []
+      items: [],
     };
   },
   computed: {
-    ...mapState(["userId"])
+    ...mapState(["userId"]),
   },
   methods: {
     ...mapActions(["logOut"]),
@@ -141,45 +172,45 @@ export default {
     },
     eventEmit() {
       let user = {
-        userId: this.userId
+        userId: this.userId,
       };
       this.getUserEvents(user);
     },
 
     getUserEvents() {
       let user = {
-        userId: this.userId
+        userId: this.userId,
       };
-      Event.getRooms(user).then(response => {
+      Event.getRooms(user).then((response) => {
         response
           .json()
-          .then(data => {
+          .then((data) => {
             console.log(data);
             this.items = data;
           })
-          .catch(error => console.log("error", error));
+          .catch((error) => console.log("error", error));
       });
     },
 
     deleteEvent(roomId) {
       let event = {
         roomId: roomId,
-        userId: this.userId
+        userId: this.userId,
       };
 
-      Event.deleteEvent(event).then(response => {
+      Event.deleteEvent(event).then((response) => {
         response
           .json()
           .then(() => {
             if (response.status === 200) {
               this.color = "success";
               this.text = "Evento excluído";
-              this.y = 'bottom'
+              this.y = "bottom";
               this.snackbar = true;
               this.getUserEvents();
             }
           })
-          .catch(error => console.log("error", error));
+          .catch((error) => console.log("error", error));
       });
     },
     validateEvent(roomId) {
@@ -193,19 +224,37 @@ export default {
       if (result) {
         this.color = "success";
         this.text = "Url do evento copiada";
-        this.y = 'top'
+        this.y = "top";
         this.snackbar = true;
       } else {
         this.color = "error";
         this.text = "Url do evento copiada";
-        this.y = 'top'
+        this.y = "top";
         this.snackbar = true;
       }
-    }
+    },
   },
   created() {
     this.getUserEvents();
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
+
+<style scoped>
+div #app {
+  background-color: #000;
+  width: 100%;
+}
+
+.home-header {
+  width: 100vw;
+  color: #fff;
+  background-color: #bb22dd;
+}
+
+.event-filter {
+  height: 60vh;
+  vertical-align: baseline;
+}
+</style>
