@@ -244,11 +244,13 @@ export default {
 <style scoped>
 div #app {
   background-color: #000;
-  width: 100%;
+  width: 100vw !important;
+
+  margin: 0 0;
 }
 
 .home-header {
-  width: 100vw;
+  width: 100vw !important;
   color: #fff;
   background-color: #bb22dd;
 }
