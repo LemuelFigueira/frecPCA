@@ -22,15 +22,16 @@
       </v-select>
     </div>
 
-    <!-- ### TODO : CHANGE TIME TO DATE >>>>>>> -->
-
     <div class="date-box">
       <label class="date-label">Data: </label>
-      <!-- <vuetify-date-select class="date"> </vuetify-date-select> -->
       <input type="date" class="date" />
     </div>
 
-    <button type="submit" class="filter-button">
+    <button
+      type="submit"
+      class="filter-button"
+      v-scroll-to="'#event-container'"
+    >
       Filtrar
     </button>
   </div>
@@ -39,12 +40,13 @@
 <script>
 import Vue from "vue";
 import vSelect from "vue-select";
-import VuetifyTimeSelect from "vuetify-time-select";
+const VueScrollTo = require("vue-scrollto");
 
-Vue.component("vuetify-time-select", VuetifyTimeSelect);
+Vue.use(VueScrollTo);
 Vue.component("v-select", vSelect);
 
 export default {
+  el: "event-filter",
   methods: {},
 };
 </script>
@@ -56,12 +58,9 @@ export default {
   height: 60vh;
   width: 100%;
   flex-direction: column;
-  margin-top: -3em;
-  margin-bottom: -6em;
   margin-top: -2.3em;
-  margin-bottom: -5em;
-
   padding-top: 30px;
+
   align-items: center;
   justify-content: center;
   align-content: center;
