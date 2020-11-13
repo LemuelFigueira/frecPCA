@@ -125,7 +125,7 @@
             </template>
           </v-snackbar>
         </v-content>
-        <v-footer color="#bb22dd" app></v-footer>
+        <v-footer color="#bb22dd" width="100vw" app></v-footer>
       </v-app>
     </v-app>
   </div>
