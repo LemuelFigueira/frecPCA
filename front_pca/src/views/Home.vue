@@ -35,7 +35,7 @@
         <v-content>
           <EventFilter class="event-filter" />
 
-          <v-container class="fill-height" fluid>
+          <v-container class="fill-height" id="event-container" fluid>
             <v-row align="center" justify="center">
               <v-col
                 cols="12"
@@ -258,5 +258,9 @@ div #app {
 .event-filter {
   height: 60vh;
   vertical-align: baseline;
+}
+
+#event-container {
+  margin-top: -6em;
 }
 </style>
