@@ -13,6 +13,9 @@ export default new Vuex.Store({
         validateRoomId:'',
         userId: localStorage.getItem('userId') || null
     },
+    getters:{
+        isAuthenticated: state => !!state.userId,
+    },
     mutations: {
 
          validateRoom(state, payload) {
@@ -68,7 +71,7 @@ export default new Vuex.Store({
                             localStorage.setItem('userId',result.Item.id)
                             commit('userAuthenticated',result.Item.id)
                             commit('errorUserAuth', '')
-                            router.push('/Home')
+                            router.push('/main')
                         } else if (response.status === 401) {
                             commit('errorUserAuth', result)
                         }
@@ -107,7 +110,7 @@ export default new Vuex.Store({
                             localStorage.setItem('userId',result.id)
                             commit('userAuthenticated',result.id)
                             commit('errorUserAuth', '')
-                            router.push('/Home')
+                            router.push('/main')
                         } else if (response.status === 400) {
                             console.log('nao')
                             commit('errorCreateUser', result)
@@ -129,7 +132,7 @@ export default new Vuex.Store({
         }) {
             commit('getUserId', localStorage.removeItem('userId'));
             commit('removeUserId')
-            router.push('/Login')
+            router.push('/main')
         }
 
     }
