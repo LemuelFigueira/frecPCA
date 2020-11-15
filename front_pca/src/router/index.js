@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
 import UserHome from '../views/UserHome.vue'
+import RegisterPageFree from '../views/RegisterPageFree.vue'
+// import RegisterPagePay from '../views/RegisterPagePay.vue'
 import EventPage from '../views/EventPage.vue'
 import GuestCheck from '../components/GuestCheck.vue'
 import Invite from '../views/Invite.vue'
@@ -37,6 +39,23 @@ const routes = [{
     requiresAuth: true,
   }
 },
+{
+  path: '/register/:id',
+  name: 'register',
+  component: RegisterPageFree,
+  meta: {
+    requiresVisitor: true,
+  }
+  ,
+},
+// {
+//   path: '/home/:id',
+//   name: 'home',
+//   component: RegisterPagePay,
+//   meta: {
+//     requiresAuth: true,
+//   }
+// },
 {
   path: '/validate',
   name: 'validate',

@@ -42,26 +42,11 @@
               v-model="group"
               active-class="deep-purple--text text--accent-4"
             >
-              <v-list-item>
-                <v-list-item-title>Festa e Show</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Arte e Cultura</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Congresso e seminário</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Tecnologia</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-title>Outros</v-list-item-title>
-              </v-list-item>
-
+              <router-link to="/main">
+                <v-list-item>
+                  <v-list-item-title>Lista de Eventos</v-list-item-title>
+                </v-list-item>
+              </router-link>
               <v-divider></v-divider>
 
               <router-link to="/home">
