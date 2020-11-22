@@ -1,6 +1,6 @@
 import Auth from "./_auth"
 
-const api = 'https://koriixo1z9.execute-api.us-east-1.amazonaws.com'
+const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com'
 const stage = 'dev'
 
 

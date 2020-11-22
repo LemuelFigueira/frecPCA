@@ -175,6 +175,10 @@ module.exports.createRoom = (event, context, callback) => {
     participants: reqBody.eventParticipants,
     eventDescription: reqBody.eventDescription,
     eventDate: reqBody.eventDate,
+    eventcategory: reqBody.eventcategory,
+    eventPrice: reqBody.eventPrice,
+    eventType: reqBody.eventType,
+    freeEvent: reqBody.freeEvent,
   }
 
   if (reqBody.roomPicture === 'no picture') {

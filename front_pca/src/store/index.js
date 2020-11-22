@@ -6,8 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        loginUrl: 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/login',
-        signInUrl: 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/sign',
+        loginUrl: 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/login',
+        signInUrl: ' https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/sign',
         notAuthenticated: '',
         notCreated: '',
         validateRoomId:'',

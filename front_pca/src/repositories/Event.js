@@ -1,6 +1,6 @@
 
 
-const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/room'
+const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/room'
 
 
 
@@ -20,7 +20,7 @@ export default {
     },
 
     async deleteEvent(Event) {
-        let url = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/delete/room'
+        let url = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/delete/room'
         const params = {
             method: 'POST',
             headers: {
@@ -34,7 +34,7 @@ export default {
     },
 
     async getroom(Event) {
-        const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/room/' + Event
+        const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/room' + Event
         const params = {
             method: 'GET',
             headers: {
@@ -48,7 +48,7 @@ export default {
 
     async getRooms(user) {
 
-        const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/room/user/'
+        const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/room/user'
         
         const params = {
             method: 'POST',
