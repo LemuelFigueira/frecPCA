@@ -157,6 +157,7 @@ export default {
         response
           .json()
           .then(data => {
+            console.log('vazio',data)
             if (data[0]["validity"] === false) {
               const newIMG = Convert.convertBase64ToFile(this.fromChild);
               var formData = new FormData();
