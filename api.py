@@ -21,7 +21,7 @@ def face_recognition():
             if roomId == None :
                 return 'Campo roomId Obrigatório'            
             
-            url = "https://ngpy61m0ak.execute-api.sa-east-1.amazonaws.com/dev/room/participant"
+            url = "https://sz7o081ir7.execute-api.sa-east-1.amazonaws.com/dev/room/participant"
 
             # Criando Objeto para requisição
             obj = {
