@@ -64,7 +64,7 @@ export default {
 
     async getAllRooms() {
 
-        const api = 'https://17m90thhna.execute-api.sa-east-1.amazonaws.com/dev/rooms'
+        const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/rooms'
         
         const params = {
             method: 'GET',
