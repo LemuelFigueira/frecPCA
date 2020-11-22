@@ -28,7 +28,7 @@ provider:
         - "s3:ListBucket"
         - "s3:GetObject"
         - "s3:PutObject"
-     Resource: "arn:aws:s3:::pca-knowns-users/*"
+     Resource: "arn:aws:s3:::pca-participants-users/*"
 functions:
   createRoom:
     handler: handler.createRoom

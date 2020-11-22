@@ -90,11 +90,11 @@ module.exports.createParticipant = (event, context, callback) => {
 
 
   let s3bucket = new AWS.S3({
-    Bucket: 'pca-knowns-users',
+    Bucket: 'pca-participants-users',
   });
 
   var params = {
-    Bucket: 'pca-knowns-users',
+    Bucket: 'pca-participants-users',
     Key: `${userPictureKey}.${type}`,
     Body: reqBody.userPicture.content,
     ContentType: reqBody.userPicture.contentType
@@ -105,7 +105,7 @@ module.exports.createParticipant = (event, context, callback) => {
       console.log(err);
     } else if (data) {
 
-      let userPicture = 'https://pca-knowns-users.s3.amazonaws.com/' + userPictureKey + `.${type}`
+      let userPicture = 'https://pca-participants-users.s3.amazonaws.com/' + userPictureKey + `.${type}`
 
       const participant = {
         id: participantId,

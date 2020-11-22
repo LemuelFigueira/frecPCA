@@ -1,7 +1,7 @@
-const apiP =  'https://x29x40ex17.execute-api.sa-east-1.amazonaws.com/dev/participant'
-const apiPC = 'https://x29x40ex17.execute-api.sa-east-1.amazonaws.com/dev/room/participant'
+const apiP =  'https://sz7o081ir7.execute-api.sa-east-1.amazonaws.com/dev/participant'
+const apiPC = 'https://sz7o081ir7.execute-api.sa-east-1.amazonaws.com/dev/room/participant'
 const apiC =  'https://recface-api.herokuapp.com/face_rec'
-const apiUP = 'https://x29x40ex17.execute-api.sa-east-1.amazonaws.com/dev/room/updateparticipant'
+const apiUP = 'https://sz7o081ir7.execute-api.sa-east-1.amazonaws.com/dev/room/updateparticipant'
 
 
 

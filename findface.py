@@ -20,7 +20,7 @@ def compare_faces(file1, file2):
     
 def face_rec(file, person):
     # Lista de Rosto conhecido recebendo o Nome e Imagem
-    known_faces = [(person[0]['name'], aws_controller.get_item('pca-knowns-users', person[0]['userPicture']))]
+    known_faces = [(person[0]['name'], aws_controller.get_item('pca-participants-users', person[0]['userPicture']))]
     
     try:        
         for name, known_file in known_faces:

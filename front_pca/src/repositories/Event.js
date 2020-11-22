@@ -34,7 +34,7 @@ export default {
     },
 
     async getroom(Event) {
-        const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/room' + Event
+        const api = 'https://mjygk5o4o8.execute-api.sa-east-1.amazonaws.com/dev/room/' + Event
         const params = {
             method: 'GET',
             headers: {

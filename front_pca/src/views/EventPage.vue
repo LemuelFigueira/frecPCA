@@ -210,7 +210,7 @@ export default {
       this.showModalValidation = true;
     },
     copyUrl(roomId) {
-      let baseUrl = `https://vuejs-teste.s3-sa-east-1.amazonaws.com/index.html#/invite/${roomId}`;
+      let baseUrl = `https://dev.d24tgjvftqomhk.amplifyapp.com/#/invite/${roomId}`;
       let result = this.$clipboard(baseUrl);
       if (result) {
         this.color = "success";
