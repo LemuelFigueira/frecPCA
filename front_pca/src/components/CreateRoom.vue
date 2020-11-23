@@ -61,7 +61,7 @@
                 @click:minute="$refs.menu1.save(beginTime)"
               ></v-time-picker>
             </v-menu>
-            <p v-if="errorMessagebeginTime">{{errorMessagebeginTime}}</p>
+            <p v-if="errorMessagebeginTime">{{ errorMessagebeginTime }}</p>
             <form>
               <v-menu
                 ref="menu"
@@ -92,7 +92,7 @@
                   @click:minute="$refs.menu.save(endTime)"
                 ></v-time-picker>
               </v-menu>
-              <p v-if="errorMessageEndTime">{{errorMessageEndTime}}</p>
+              <p v-if="errorMessageEndTime">{{ errorMessageEndTime }}</p>
               <v-text-field
                 v-model="name"
                 :error-messages="nameErrors"
@@ -125,11 +125,47 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker locale="pt-br" v-model="picker" no-title @input="menudate2 = false"></v-date-picker>
+                <v-date-picker
+                  locale="pt-br"
+                  v-model="picker"
+                  no-title
+                  @input="menudate2 = false"
+                ></v-date-picker>
               </v-menu>
-              <v-text-field label="Endereço" v-model="adress" :error-messages="adressErrors"></v-text-field>
-              <v-text-field label="Cidade" v-model="city" :error-messages="cityErrors"></v-text-field>
-              <v-text-field label="Bairro" v-model="district" :error-messages="districtErrors"></v-text-field>
+              <v-container fluid>
+                <v-radio-group v-model="freeEvent" required>
+                  <v-radio value="true" id="free" :checked="true">
+                    <template v-slot:label>
+                      <div>
+                        <strong class="success--text">Gratuito</strong>
+                      </div>
+                    </template>
+                  </v-radio>
+                  <v-radio value="false" id="private">
+                    <template v-slot:label>
+                      <div>
+                        <strong class="primary--text">Privado</strong>
+                      </div>
+                    </template>
+                  </v-radio>
+                </v-radio-group>
+              </v-container>
+
+              <v-text-field
+                label="Endereço"
+                v-model="adress"
+                :error-messages="adressErrors"
+              ></v-text-field>
+              <v-text-field
+                label="Cidade"
+                v-model="city"
+                :error-messages="cityErrors"
+              ></v-text-field>
+              <v-text-field
+                label="Bairro"
+                v-model="district"
+                :error-messages="districtErrors"
+              ></v-text-field>
 
               <v-select
                 v-model="numberParticipants"
@@ -137,7 +173,7 @@
                 :items="quantidade"
                 filled
                 required
-                :menu-props="{ maxHeight:'200' }"
+                :menu-props="{ maxHeight: '200' }"
                 hint="Quantidade de participantes"
                 persistent-hint
               ></v-select>
@@ -179,14 +215,15 @@ export default {
     dateFormatted: { required },
     district: { required },
     city: { required },
-    numberParticipants: { required }
+    numberParticipants: { required },
   },
   data() {
     return {
+      freeEvent: true,
       menudate2: false,
       color: "",
       mode: "",
-      dateFormatted:'',
+      dateFormatted: "",
       picker: "",
       eventDate: "",
       snackbar: false,
@@ -214,25 +251,25 @@ export default {
       numberParticipants: "",
       dialog: false,
       rules: [
-        value =>
+        (value) =>
           !value ||
           value.size < 5000000 ||
-          "A foto do evento deve ser menor que 5 MB"
+          "A foto do evento deve ser menor que 5 MB",
       ],
 
       notifications: false,
       sound: true,
-      widgets: false
+      widgets: false,
     };
   },
   props: {
-    visible: Boolean
+    visible: Boolean,
   },
   watch: {
-       picker(val) {
-        this.dateFormatted = this.formatDate(val)
-      },
+    picker(val) {
+      this.dateFormatted = this.formatDate(val);
     },
+  },
   methods: {
     async submit() {
       console.log(this.picker);
@@ -254,7 +291,7 @@ export default {
         }
 
         var file = this.roomPic ? this.roomPic : "";
-     
+
         const newEvent = {
           eventBeginTime: this.beginTime,
           eventEndTime: this.endTime,
@@ -265,7 +302,7 @@ export default {
           eventName: this.name,
           eventParticipants: this.numberParticipants,
           eventDescription: this.description,
-          eventDate: this.dateFormatted
+          eventDate: this.dateFormatted,
         };
 
         if (file) {
@@ -285,10 +322,10 @@ export default {
           newEvent.roomPicture = "no picture";
         }
 
-        Event.createRoom(newEvent).then(response => {
+        Event.createRoom(newEvent).then((response) => {
           response
             .json()
-            .then(data => {
+            .then((data) => {
               console.log(data);
               if (response.status === 201) {
                 this.created = true;
@@ -299,7 +336,7 @@ export default {
                 (this.text = "Erro ao criar evento"), (this.snackbar = true);
               }
             })
-            .catch(error => console.log("error", error));
+            .catch((error) => console.log("error", error));
         });
       } else {
         if (fileType) {
@@ -322,12 +359,12 @@ export default {
         }
       }
     },
-    formatDate (date) {
-        if (!date) return null
+    formatDate(date) {
+      if (!date) return null;
 
-        const [year, month, day] = date.split('-')
-        return `${day}/${month}/${year}`
-      },
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
 
     backHome() {
       console.log(this.created);
@@ -338,7 +375,7 @@ export default {
       this.$forceUpdate();
       this.created = false;
       this.show = false;
-    }
+    },
   },
   computed: {
     ...mapState(["userId"]),
@@ -352,9 +389,9 @@ export default {
           this.created = false;
           this.$emit("close");
         }
-      }
+      },
     },
-    computedDateFormatted () {
+    computedDateFormatted() {
       return this.formatDate(this.date);
     },
     nameErrors() {
@@ -398,8 +435,7 @@ export default {
     dateErrors() {
       const errors = [];
       if (!this.$v.dateFormatted.$dirty) return errors;
-      !this.$v.dateFormatted.required &&
-        errors.push("Defina a data do evento");
+      !this.$v.dateFormatted.required && errors.push("Defina a data do evento");
       return errors;
     },
     participantsErrors() {
@@ -408,8 +444,8 @@ export default {
       !this.$v.numberParticipants.required &&
         errors.push("Selecione a quantidade de participantes");
       return errors;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
