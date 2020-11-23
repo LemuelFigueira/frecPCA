@@ -27,12 +27,7 @@
         >
       </v-app-bar>
 
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-        class="text-left"
-      >
+      <v-navigation-drawer v-model="drawer" temporary app class="text-left">
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="title">Menu Evento</v-list-item-title>
@@ -53,6 +48,12 @@
             <router-link to="/home">
               <v-list-item v-if="isAuthenticated">
                 <v-list-item-title>Meus eventos</v-list-item-title>
+              </v-list-item>
+            </router-link>
+
+            <router-link to="/registerevent">
+              <v-list-item v-if="isAuthenticated">
+                <v-list-item-title>Eventos Inscritos</v-list-item-title>
               </v-list-item>
             </router-link>
 
@@ -78,18 +79,18 @@
       </v-navigation-drawer>
 
       <v-content>
-          <CreateRoom
-            v-on:eventCreated="eventEmit"
-            :visible="showModal"
-            @close="showModal = false"
-          />
-          <GuestCheck
-            v-on:eventCreated="eventEmit"
-            :roomId="roomIdValidation"
-            :visible="showModalValidation"
-            @close="showModalValidation = false"
-          />
-          <EventFilter v-if="this.items.length > 0" />
+        <CreateRoom
+          v-on:eventCreated="eventEmit"
+          :visible="showModal"
+          @close="showModal = false"
+        />
+        <GuestCheck
+          v-on:eventCreated="eventEmit"
+          :roomId="roomIdValidation"
+          :visible="showModalValidation"
+          @close="showModalValidation = false"
+        />
+        <EventFilter v-if="this.items.length > 0" />
         <v-container>
           <v-row>
             <v-col
