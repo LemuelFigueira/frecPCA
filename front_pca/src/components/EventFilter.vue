@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-box">
+  <form class="filter-box" v-on:submit="scrollToCard">
     <div class="filter-title">
       <span>
         Filtros
@@ -24,17 +24,13 @@
 
     <div class="date-box">
       <label class="date-label">Data: </label>
-      <input type="date" class="date" />
+      <input type="date" class="date" required />
     </div>
 
-    <button
-      type="submit"
-      class="filter-button"
-      v-scroll-to="'#event-container'"
-    >
+    <button type="submit" class="filter-button">
       Filtrar
     </button>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -47,7 +43,11 @@ Vue.component("v-select", vSelect);
 
 export default {
   el: "event-filter",
-  methods: {},
+  methods: {
+    scrollToCard: function() {
+      VueScrollTo.scrollTo(".v-content");
+    },
+  },
 };
 </script>
 
