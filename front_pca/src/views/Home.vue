@@ -1,44 +1,30 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <CreateRoom
-        v-on:eventCreated="eventEmit"
-        :visible="showModal"
-        @close="showModal = false"
-      />
-      <GuestCheck
-        v-on:eventCreated="eventEmit"
-        :roomId="roomIdValidation"
-        :visible="showModalValidation"
-        @close="showModalValidation = false"
-      />
-
-      <v-app-bar app color="deep-purple" dark>
+      <v-app-bar app fixed color="deep-purple" dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Eventos</v-toolbar-title>
         <v-spacer></v-spacer>
 
         <v-btn
           v-if="isAuthenticated"
-          style="left:10%"
           light
           small
           color="white"
+          class="mr-5"
           @click="createRoom"
           >Criar evento</v-btn
         >
 
         <v-btn
           v-if="!isAuthenticated"
-          style="left:15%"
           light
           small
           color="white"
+          class="mr-5"
           to="/login"
           >Logar</v-btn
         >
-
-        <v-spacer></v-spacer>
       </v-app-bar>
 
       <v-navigation-drawer
@@ -91,16 +77,26 @@
         </v-list>
       </v-navigation-drawer>
 
-      <EventFilter v-if="this.items.length > 0" />
-
       <v-content>
-        <v-container class="fill-height" id="event-container" fluid>
-          <v-row align="center" justify="center">
+          <CreateRoom
+            v-on:eventCreated="eventEmit"
+            :visible="showModal"
+            @close="showModal = false"
+          />
+          <GuestCheck
+            v-on:eventCreated="eventEmit"
+            :roomId="roomIdValidation"
+            :visible="showModalValidation"
+            @close="showModalValidation = false"
+          />
+          <EventFilter v-if="this.items.length > 0" />
+        <v-container>
+          <v-row>
             <v-col
               cols="12"
-              md="12"
               xs="12"
-              lg="12"
+              md="12"
+              lg="4"
               v-for="(something, index) in this.items"
               :key="index"
             >
@@ -113,7 +109,7 @@
               >
                 <v-card class="mx-auto" max-width="310">
                   <v-img
-                    style="height:130px"
+                    style="height: 130px"
                     class="white--text align-end"
                     src="../assets/meca.jpg"
                   ></v-img>
@@ -293,19 +289,19 @@ export default {
 </script>
 
 <style scoped>
-div #app {
+/* div #app {
   width: 100vw !important;
 
   margin: 0 0;
-}
+} */
 
-.home-header {
+/* .home-header {
   width: 100vw !important;
   color: #fff;
   background-color: #bb22dd;
-}
+} */
 
-#event-container {
+/* #event-container {
   margin-top: 0em;
-}
+} */
 </style>

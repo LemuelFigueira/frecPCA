@@ -7,9 +7,9 @@
       hide-overlay
       transition="dialog-bottom-transition"
     >
-      <template v-slot:activator="{ on }">
+      <!-- <template v-slot:activator="{ on }">
         <v-btn color="deep-purple" dark v-on="on">Open Dialog</v-btn>
-      </template>
+      </template> -->
       <v-card>
         <v-toolbar dark color="deep-purple">
           <v-btn icon dark @click="backHome">
