@@ -91,7 +91,7 @@
         </v-list>
       </v-navigation-drawer>
 
-      <EventFilter />
+      <EventFilter v-if="this.items.length > 0" />
 
       <v-content>
         <v-container class="fill-height" id="event-container" fluid>
