@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-box">
+  <form class="filter-box" v-on:submit="scrollToCard">
     <div class="filter-title">
       <span>
         Filtros
@@ -24,17 +24,13 @@
 
     <div class="date-box">
       <label class="date-label">Data: </label>
-      <input type="date" class="date" />
+      <input type="date" class="date" required />
     </div>
 
-    <button
-      type="submit"
-      class="filter-button"
-      v-scroll-to="'#event-container'"
-    >
+    <button type="submit" class="filter-button">
       Filtrar
     </button>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -47,7 +43,11 @@ Vue.component("v-select", vSelect);
 
 export default {
   el: "event-filter",
-  methods: {},
+  methods: {
+    scrollToCard: function() {
+      VueScrollTo.scrollTo(".v-content");
+    },
+  },
 };
 </script>
 
@@ -55,24 +55,28 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&display=swap");
 
 .filter-box {
-  height: 60vh;
+  height: 30%;
   width: 100%;
+  display: flex;
   flex-direction: column;
-  margin-top: -2.3em;
-  padding-top: 30px;
+  margin-top: -0.3em;
+
+  margin-bottom: 1em;
+
+  padding-top: 1.3em;
 
   align-items: center;
   justify-content: center;
   align-content: center;
-  display: flex;
+
   background-color: #9932cc;
 }
 
 .filter-title {
-  font: 700 3rem Archivo;
+  font: 700 2rem Archivo;
   color: #fff;
 
-  margin: 0 auto;
+  margin: 0 0;
 }
 
 .category-box {
@@ -87,7 +91,7 @@ export default {
   border-radius: 0.8rem;
   background-color: #fff;
 
-  margin-top: 2.5em;
+  margin-top: 1.3em;
   padding-top: 20px;
 }
 .category-box .select-category {
@@ -143,8 +147,8 @@ export default {
   justify-content: center;
   text-decoration: none;
   transition: background-color 0.2s;
-  margin-top: 2rem;
-  margin-bottom: 0em;
+  margin-top: 1rem;
+  margin-bottom: 1em;
 }
 
 .filter-button:hover {
