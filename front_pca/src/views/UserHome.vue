@@ -26,7 +26,7 @@
           >Logar</v-btn
         >
       </v-app-bar>
-      
+
       <v-navigation-drawer v-model="drawer" temporary app class="text-left">
         <v-list-item>
           <v-list-item-content>
@@ -94,7 +94,7 @@
 
         <EventFilter v-if="this.items.length > 0" />
         <v-container>
-          <v-row >
+          <v-row>
             <v-col
               cols="12"
               md="12"
@@ -192,7 +192,6 @@ import { mapActions, mapState, mapGetters } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
 import Event from "@/repositories/Event";
 import GuestCheck from "../components/GuestCheck.vue";
-import EventFilter from "../components/EventFilter.vue";
 
 export default {
   props: {
@@ -201,7 +200,6 @@ export default {
   components: {
     CreateRoom,
     GuestCheck,
-    EventFilter,
   },
   data() {
     return {
