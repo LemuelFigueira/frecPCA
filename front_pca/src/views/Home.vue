@@ -357,12 +357,4 @@ div #app {
   color: #fff;
   background-color: #bb22dd;
 }
-
-.filter-box {
-  margin-top: 1em;
-}
-
-#event-container {
-  margin-top: 0em;
-}
 </style>
