@@ -61,7 +61,7 @@
                 @click:minute="$refs.menu1.save(beginTime)"
               ></v-time-picker>
             </v-menu>
-            <p v-if="errorMessagebeginTime">{{errorMessagebeginTime}}</p>
+            <p v-if="errorMessagebeginTime">{{ errorMessagebeginTime }}</p>
             <form>
               <v-menu
                 ref="menu"
@@ -92,7 +92,7 @@
                   @click:minute="$refs.menu.save(endTime)"
                 ></v-time-picker>
               </v-menu>
-              <p v-if="errorMessageEndTime">{{errorMessageEndTime}}</p>
+              <p v-if="errorMessageEndTime">{{ errorMessageEndTime }}</p>
               <v-text-field
                 v-model="name"
                 :error-messages="nameErrors"
@@ -106,6 +106,7 @@
                 :error-messages="descriptionErrors"
                 :counter="100"
               ></v-text-field>
+
               <v-menu
                 v-model="menudate2"
                 :close-on-content-click="false"
@@ -125,11 +126,95 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker locale="pt-br" v-model="picker" no-title @input="menudate2 = false"></v-date-picker>
+                <v-date-picker
+                  locale="pt-br"
+                  v-model="picker"
+                  no-title
+                  @input="menudate2 = false"
+                ></v-date-picker>
               </v-menu>
-              <v-text-field label="Endereço" v-model="adress" :error-messages="adressErrors"></v-text-field>
-              <v-text-field label="Cidade" v-model="city" :error-messages="cityErrors"></v-text-field>
-              <v-text-field label="Bairro" v-model="district" :error-messages="districtErrors"></v-text-field>
+
+              <v-select
+                class="select-category"
+                label="Selecione uma categoria"
+                :items="[
+                  'Tecnologia',
+                  'Cultura e Lazer',
+                  'Esporte',
+                  'E-sport',
+                  'Show ao vivo',
+                  'Beleza e Moda',
+                ]"
+                :required="!selected"
+                v-model="eventCategory"
+              >
+              </v-select>
+
+              <v-radio-group v-model="eventType" mandatory>
+                <template v-slot:label>
+                  <div>Tipo de <strong>Evento</strong></div>
+                </template>
+                <v-radio value="public" id="public" v-bind:checked="true">
+                  <template v-slot:label>
+                    <div>
+                      <strong class="success--text">Público</strong>
+                    </div>
+                  </template>
+                </v-radio>
+                <v-radio value="private" id="private">
+                  <template v-slot:label>
+                    <div>
+                      <strong class="primary--text">Privado</strong>
+                    </div>
+                  </template>
+                </v-radio>
+              </v-radio-group>
+
+              <v-radio-group v-model="freeEvent" mandatory>
+                <template v-slot:label>
+                  <div><strong> Gratuito ?</strong></div>
+                </template>
+                <v-radio value="true" id="gratuito" v-bind:checked="true">
+                  <template v-slot:label>
+                    <div>
+                      <strong class="success--text">Gratuito</strong>
+                    </div>
+                  </template>
+                </v-radio>
+                <v-radio value="false" id="pago">
+                  <template v-slot:label>
+                    <div>
+                      <strong class="primary--text">Pago</strong>
+                    </div>
+                  </template>
+                </v-radio>
+                <div v-if="freeEvent === 'false'">
+                  <br />
+                  <v-text-field
+                    label="Digite o preço do evento"
+                    prepend-icon="mdi-currency-brl"
+                    v-model.number="eventPrice"
+                    v-bind="money"
+                    type="number"
+                  ></v-text-field>
+                </div>
+              </v-radio-group>
+
+              <v-text-field
+                label="Endereço"
+                v-model="adress"
+                :error-messages="adressErrors"
+              ></v-text-field>
+              <v-text-field
+                label="Cidade"
+                v-model="city"
+                :error-messages="cityErrors"
+              ></v-text-field>
+              <v-text-field
+                label="Bairro"
+                v-model="district"
+                :error-messages="districtErrors"
+              ></v-text-field>
 
               <v-select
                 v-model="numberParticipants"
@@ -137,7 +222,7 @@
                 :items="quantidade"
                 filled
                 required
-                :menu-props="{ maxHeight:'200' }"
+                :menu-props="{ maxHeight: '200' }"
                 hint="Quantidade de participantes"
                 persistent-hint
               ></v-select>
@@ -169,6 +254,7 @@
 import Event from "@/repositories/Event";
 import { required, maxLength } from "vuelidate/lib/validators";
 import { mapState } from "vuex";
+
 // import VueTimepicker from "vue2-timepicker";
 // import "vue2-timepicker/dist/VueTimepicker.css";
 export default {
@@ -179,14 +265,23 @@ export default {
     dateFormatted: { required },
     district: { required },
     city: { required },
-    numberParticipants: { required }
+    numberParticipants: { required },
+    eventCategory: { required },
+    eventPrice: { required },
+    eventType: { required },
+    freeEvent: { required },
   },
   data() {
     return {
+      eventCategory: "",
+      eventPrice: 0,
+      eventPriceFormatted: "",
+      eventType: "",
+      freeEvent: true,
       menudate2: false,
       color: "",
       mode: "",
-      dateFormatted:'',
+      dateFormatted: "",
       picker: "",
       eventDate: "",
       snackbar: false,
@@ -214,25 +309,25 @@ export default {
       numberParticipants: "",
       dialog: false,
       rules: [
-        value =>
+        (value) =>
           !value ||
           value.size < 5000000 ||
-          "A foto do evento deve ser menor que 5 MB"
+          "A foto do evento deve ser menor que 5 MB",
       ],
 
       notifications: false,
       sound: true,
-      widgets: false
+      widgets: false,
     };
   },
   props: {
-    visible: Boolean
+    visible: Boolean,
   },
   watch: {
-       picker(val) {
-        this.dateFormatted = this.formatDate(val)
-      },
+    picker(val) {
+      this.dateFormatted = this.formatDate(val);
     },
+  },
   methods: {
     async submit() {
       console.log(this.picker);
@@ -254,7 +349,7 @@ export default {
         }
 
         var file = this.roomPic ? this.roomPic : "";
-     
+
         const newEvent = {
           eventBeginTime: this.beginTime,
           eventEndTime: this.endTime,
@@ -265,7 +360,11 @@ export default {
           eventName: this.name,
           eventParticipants: this.numberParticipants,
           eventDescription: this.description,
-          eventDate: this.dateFormatted
+          eventDate: this.dateFormatted,
+          eventCategory: this.eventCategory,
+          eventPrice: this.eventPrice,
+          eventType: this.eventType,
+          freeEvent: this.freeEvent,
         };
 
         if (file) {
@@ -285,10 +384,10 @@ export default {
           newEvent.roomPicture = "no picture";
         }
 
-        Event.createRoom(newEvent).then(response => {
+        Event.createRoom(newEvent).then((response) => {
           response
             .json()
-            .then(data => {
+            .then((data) => {
               console.log(data);
               if (response.status === 201) {
                 this.created = true;
@@ -299,7 +398,7 @@ export default {
                 (this.text = "Erro ao criar evento"), (this.snackbar = true);
               }
             })
-            .catch(error => console.log("error", error));
+            .catch((error) => console.log("error", error));
         });
       } else {
         if (fileType) {
@@ -322,12 +421,25 @@ export default {
         }
       }
     },
-    formatDate (date) {
-        if (!date) return null
 
-        const [year, month, day] = date.split('-')
-        return `${day}/${month}/${year}`
-      },
+    formatPrice(price) {
+      if (!price) {
+        return null;
+      }
+
+      var formattedPrice = price.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
+
+      return formattedPrice;
+    },
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
 
     backHome() {
       console.log(this.created);
@@ -338,7 +450,7 @@ export default {
       this.$forceUpdate();
       this.created = false;
       this.show = false;
-    }
+    },
   },
   computed: {
     ...mapState(["userId"]),
@@ -352,9 +464,12 @@ export default {
           this.created = false;
           this.$emit("close");
         }
-      }
+      },
     },
-    computedDateFormatted () {
+    computedPriceFormatted() {
+      return this.formatPrice(this.eventPrice);
+    },
+    computedDateFormatted() {
       return this.formatDate(this.date);
     },
     nameErrors() {
@@ -398,8 +513,7 @@ export default {
     dateErrors() {
       const errors = [];
       if (!this.$v.dateFormatted.$dirty) return errors;
-      !this.$v.dateFormatted.required &&
-        errors.push("Defina a data do evento");
+      !this.$v.dateFormatted.required && errors.push("Defina a data do evento");
       return errors;
     },
     participantsErrors() {
@@ -408,8 +522,8 @@ export default {
       !this.$v.numberParticipants.required &&
         errors.push("Selecione a quantidade de participantes");
       return errors;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

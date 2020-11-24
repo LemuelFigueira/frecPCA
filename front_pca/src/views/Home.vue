@@ -332,19 +332,27 @@ export default {
 </script>
 
 <style scoped>
-/* div #app {
+ div #app {
   width: 100vw !important;
 
-  margin: 0 0;
-} */
+}
 
-/* .home-header {
+
+  margin: 0 0;
+} 
+ .home-header {
   width: 100vw !important;
   color: #fff;
   background-color: #bb22dd;
-} */
+} 
 
-/* #event-container {
+
+.filter-box {
+  margin-top: 1em;
+}
+
+#event-container {
   margin-top: 0em;
-} */
+} 
+
 </style>
