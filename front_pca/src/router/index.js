@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
 import UserHome from '../views/UserHome.vue'
+import RegisterEvent from '../views/UserRegisterEvent.vue'
 import RegisterPageFree from '../views/RegisterPageFree.vue'
 // import RegisterPagePay from '../views/RegisterPagePay.vue'
 import EventPage from '../views/EventPage.vue'
@@ -77,6 +78,14 @@ const routes = [{
   path: '/event/:id',
   name: 'EventPage',
   component: EventPage,
+  meta: {
+    requiresVisitor: true,
+  }
+},
+{
+  path: '/registerevent',
+  name: 'RegisterEvent',
+  component: RegisterEvent,
   meta: {
     requiresVisitor: true,
   }

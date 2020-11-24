@@ -1,62 +1,31 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <CreateRoom
-        v-on:eventCreated="eventEmit"
-        :visible="showModal"
-        @close="showModal = false"
-      />
-      <GuestCheck
-        v-on:eventCreated="eventEmit"
-        :roomId="roomIdValidation"
-        :visible="showModalValidation"
-        @close="showModalValidation = false"
-      />
-
-      <v-app-bar app color="deep-purple" dark>
+      <v-app-bar app fixed color="deep-purple" dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Eventos</v-toolbar-title>
         <v-spacer></v-spacer>
 
         <v-btn
           v-if="isAuthenticated"
-          style="left:10%"
           light
           small
           color="white"
+          class="mr-5"
           @click="createRoom"
-          >Criar evento</v-btn
-        >
+        >Criar evento</v-btn>
 
-        <v-btn
-          v-if="!isAuthenticated"
-          style="left:15%"
-          light
-          small
-          color="white"
-          to="/login"
-          >Logar</v-btn
-        >
-
-        <v-spacer></v-spacer>
+        <v-btn v-if="!isAuthenticated" light small color="white" class="mr-5" to="/login">Logar</v-btn>
       </v-app-bar>
 
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-        class="text-left"
-      >
+      <v-navigation-drawer v-model="drawer" temporary app class="text-left">
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="title">Menu Evento</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list nav dense>
-          <v-list-item-group
-            v-model="group"
-            active-class="deep-purple--text text--accent-4"
-          >
+          <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
             <router-link to="/main">
               <v-list-item>
                 <v-list-item-title>Lista de Eventos</v-list-item-title>
@@ -67,6 +36,12 @@
             <router-link to="/home">
               <v-list-item v-if="isAuthenticated">
                 <v-list-item-title>Meus eventos</v-list-item-title>
+              </v-list-item>
+            </router-link>
+
+            <router-link to="/registerevent">
+              <v-list-item v-if="isAuthenticated">
+                <v-list-item-title>Eventos Inscritos</v-list-item-title>
               </v-list-item>
             </router-link>
 
@@ -91,16 +66,49 @@
         </v-list>
       </v-navigation-drawer>
 
-      <EventFilter v-if="this.items.length > 0" />
-
       <v-content>
-        <v-container class="fill-height" id="event-container" fluid>
-          <v-row align="center" justify="center">
+        <CreateRoom v-on:eventCreated="eventEmit" :visible="showModal" @close="showModal = false" />
+        <GuestCheck
+          v-on:eventCreated="eventEmit"
+          :roomId="roomIdValidation"
+          :visible="showModalValidation"
+          @close="showModalValidation = false"
+        />
+
+        <v-container>
+          <v-row no-gutters>
+            <v-col xs="12" md="12" lg="4">
+              <div>
+                <v-select
+                  label="Selecione uma categoria"
+                  v-model="selectCategory"
+                  class="select-category"
+                  :items="categories"
+                ></v-select>
+              </div>
+            </v-col>
+            <div style="padding-top: 25px">
+              <v-btn @click="searchEventByCategory" class="mx-2" icon dark small color="primary">
+                <v-icon dark>mdi-magnify</v-icon>
+              </v-btn>
+            </div>
+          </v-row>
+          <v-row>
+            <v-col xs="12" md="12" lg="4">
+              <div class="text-center" v-if="search">
+                <v-btn rounded :color="categoryColor" dark>{{category}}</v-btn>
+                <v-btn icon dark small color="primary" @click="clearSearch">
+                  <v-icon dark>mdi-close</v-icon>
+                </v-btn>
+              </div>
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col
               cols="12"
-              md="12"
               xs="12"
-              lg="12"
+              md="12"
+              lg="4"
               v-for="(something, index) in this.items"
               :key="index"
             >
@@ -113,24 +121,26 @@
               >
                 <v-card class="mx-auto" max-width="310">
                   <v-img
-                    style="height:130px"
+                    style="height: 130px"
                     class="white--text align-end"
                     src="../assets/meca.jpg"
                   ></v-img>
 
-                  <v-card-title class="pb-5">{{
+                  <v-card-title class="pb-5">
+                    {{
                     something.eventName
-                  }}</v-card-title>
+                    }}
+                  </v-card-title>
 
-                  <v-card-subtitle class="pt-1 pb-0 text-left"
-                    >{{ something.eventDate }} |
-                    {{ something.eventBeginTime }}</v-card-subtitle
-                  >
+                  <v-card-subtitle class="pt-1 pb-0 text-left">
+                    {{ something.eventDate }} |
+                    {{ something.eventBeginTime }}
+                  </v-card-subtitle>
 
-                  <v-card-subtitle class="text-left"
-                    >{{ something.eventDistrict }},
-                    {{ something.eventCity }}</v-card-subtitle
-                  >
+                  <v-card-subtitle class="text-left">
+                    {{ something.eventDistrict }},
+                    {{ something.eventCity }}
+                  </v-card-subtitle>
 
                   <!-- <v-card-actions class="justify-center">
                     <v-btn color="deep-purple" @click="copyUrl(something.roomId)" text><v-icon size="30"  >mdi-share-variant</v-icon></v-btn>
@@ -177,19 +187,21 @@ import { mapActions, mapState, mapGetters } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
 import Event from "@/repositories/Event";
 import GuestCheck from "../components/GuestCheck.vue";
-import EventFilter from "../components/EventFilter.vue";
 
 export default {
   props: {
-    source: String,
+    source: String
   },
   components: {
     CreateRoom,
-    GuestCheck,
-    EventFilter,
+    GuestCheck
   },
   data() {
     return {
+      selectCategory: null,
+      categoryColor: null,
+      search: false,
+      category: null,
       drawer: false,
       group: null,
       showModalValidation: false,
@@ -204,19 +216,46 @@ export default {
       y: "",
       showModal: false,
       items: [],
+      categories: [
+        "Tecnologia",
+        "Cultura e Lazer",
+        "Esporte",
+        "E-sport",
+        "Show ao vivo",
+        "Beleza e Moda"
+      ],
+      colors: [
+        "lime",
+        "teal",
+        "purple",
+        "black",
+        "cyan",
+        "indigo"
+      ]
     };
   },
   computed: {
     ...mapState(["userId"]),
-    ...mapGetters(["isAuthenticated"]),
+    ...mapGetters(["isAuthenticated"])
   },
   watch: {
     group() {
       this.drawer = false;
-    },
+    }
   },
   methods: {
     ...mapActions(["logOut"]),
+    clearSearch() {
+      this.search = false;
+      this.selectCategory = false;
+    },
+    searchEventByCategory() {
+      let index = this.categories.indexOf(this.selectCategory);
+      let getColor = this.colors[index];
+      this.categoryColor = getColor;
+      this.search = true;
+      this.category = this.selectCategory;
+    },
     createRoom() {
       this.showModal = true;
     },
@@ -226,30 +265,30 @@ export default {
     },
     eventEmit() {
       let user = {
-        userId: this.userId,
+        userId: this.userId
       };
       this.getUserEvents(user);
     },
 
     getAllEvents() {
-      Event.getAllRooms().then((response) => {
+      Event.getAllRooms().then(response => {
         response
           .json()
-          .then((data) => {
+          .then(data => {
             console.log(data);
             this.items = data;
           })
-          .catch((error) => console.log("error", error));
+          .catch(error => console.log("error", error));
       });
     },
 
     deleteEvent(roomId) {
       let event = {
         roomId: roomId,
-        userId: this.userId,
+        userId: this.userId
       };
 
-      Event.deleteEvent(event).then((response) => {
+      Event.deleteEvent(event).then(response => {
         response
           .json()
           .then(() => {
@@ -261,7 +300,7 @@ export default {
               this.getUserEvents();
             }
           })
-          .catch((error) => console.log("error", error));
+          .catch(error => console.log("error", error));
       });
     },
     validateEvent(roomId) {
@@ -283,27 +322,37 @@ export default {
         this.y = "top";
         this.snackbar = true;
       }
-    },
+    }
   },
   created() {
     this.getAllEvents();
   },
-  mounted() {},
+  mounted() {}
 };
 </script>
 
 <style scoped>
-div #app {
+ div #app {
   width: 100vw !important;
+
 }
 
-.home-header {
+
+  margin: 0 0;
+} 
+ .home-header {
   width: 100vw !important;
   color: #fff;
   background-color: #bb22dd;
-}
+} 
+
 
 .filter-box {
   margin-top: 1em;
 }
+
+#event-container {
+  margin-top: 0em;
+} 
+
 </style>
