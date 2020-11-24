@@ -144,7 +144,7 @@
                 color="deep-purple"
                 text
                 :to="{
-                  name: 'registerfree',
+                  name: 'registerpay',
                   params: { id: this.$route.params.id },
                 }"
                 >Ir para Registro</v-btn

@@ -138,7 +138,7 @@
                             <v-icon size="48">mdi-arrow-left-circle</v-icon>
                           </v-btn>
                           <v-spacer></v-spacer>
-                          <v-btn color="deep-purple" :disabled="step === 3" text @click="step++">
+                          <v-btn color="deep-purple" :disabled="step === 3" text @click="payment()">
                             <v-icon size="48">mdi-arrow-right-circle</v-icon>
                           </v-btn>
                         </v-row>
@@ -207,6 +207,8 @@
   </div>
 </template>
 <script>
+// var stripe = window.Stripe('pk_test_51HlaLCL53UtpCrjBIiZuwQCP7cAw7q6GmNp0k20ZsrQhOhrGsNi94vMJfXLVuWOfontbMC844mlwrCrodxgPeSEU00R0ATITek');
+
 import { mapActions, mapState, mapGetters } from "vuex";
 import Event from "@/repositories/Event";
 import Participant from "@/repositories/Participant";
@@ -286,6 +288,31 @@ export default {
       this.step++;
       this.submit();
     },
+    payment(){
+      let data = {
+        productValue: this.event.eventPrice,
+        Qtn: 1,
+        productDescription:this.event.eventDescription,
+        productName: this.event.eventName,
+      }
+      console.log(data)
+      // Event.checkOut(data).then((response) => {
+      //   response
+      //     .json()
+      //     .then((data) => {
+      //       this.sessionId = data;
+      //       console.log(this.sessionId);
+      //       stripe.redirectToCheckout({
+      //         sessionId: this.sessionId.id
+      //       }).then(function (){
+
+      //       });
+      //     })
+      //     .catch((error) => console.log("error", error));
+      // });
+
+
+    },
     submit() {
       const newIMG = Convert.convertBase64ToFile(this.fromChild);
 
@@ -321,22 +348,14 @@ export default {
   },
   mounted() {
     const newEvent = this.$route.params.id;
-    Event.getroom(newEvent).then(response => {
+    Event.getroom(newEvent).then((response) => {
       response
         .json()
-        .then(data => {
-          this.eventname = data[0]["eventName"];
-          this.roomPicture = data[0]["roomPicture"];
-          this.district = data[0]["eventDistrict"];
-          this.adress = data[0]["eventAdress"];
-          this.city = data[0]["eventCity"];
-          this.description = data[0]["eventDescription"];
-          this.beginTime = data[0]["eventBeginTime"];
-          this.endTime = data[0]["eventEndTime"];
-          this.eventdate = data[0]["eventDate"];
+        .then((data) => {
+          this.event = data[0];
           console.log(data);
         })
-        .catch(error => console.log("error", error));
+        .catch((error) => console.log("error", error));
     });
   }
 };

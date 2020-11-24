@@ -76,6 +76,18 @@ export default {
             body:  JSON.stringify()
         }
         return fetch(api, params)
-    }
+    },
+
+    async checkOut(Event){
+        let url = 'https://ivd4uju24l.execute-api.sa-east-1.amazonaws.com/dev/checkoutSession'
+        const params = {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(Event)       
+        }
+        return fetch(url, params)
+    },
 
 }
