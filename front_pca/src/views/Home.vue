@@ -13,9 +13,18 @@
           color="white"
           class="mr-5"
           @click="createRoom"
-        >Criar evento</v-btn>
+          >Criar evento</v-btn
+        >
 
-        <v-btn v-if="!isAuthenticated" light small color="white" class="mr-5" to="/login">Logar</v-btn>
+        <v-btn
+          v-if="!isAuthenticated"
+          light
+          small
+          color="white"
+          class="mr-5"
+          to="/login"
+          >Logar</v-btn
+        >
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer" temporary app class="text-left">
@@ -25,7 +34,10 @@
           </v-list-item-content>
         </v-list-item>
         <v-list nav dense>
-          <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
+          <v-list-item-group
+            v-model="group"
+            active-class="deep-purple--text text--accent-4"
+          >
             <router-link to="/main">
               <v-list-item>
                 <v-list-item-title>Lista de Eventos</v-list-item-title>
@@ -67,7 +79,11 @@
       </v-navigation-drawer>
 
       <v-content>
-        <CreateRoom v-on:eventCreated="eventEmit" :visible="showModal" @close="showModal = false" />
+        <CreateRoom
+          v-on:eventCreated="eventEmit"
+          :visible="showModal"
+          @close="showModal = false"
+        />
         <GuestCheck
           v-on:eventCreated="eventEmit"
           :roomId="roomIdValidation"
@@ -88,7 +104,14 @@
               </div>
             </v-col>
             <div style="padding-top: 25px">
-              <v-btn @click="searchEventByCategory" class="mx-2" icon dark small color="primary">
+              <v-btn
+                @click="searchEventByCategory"
+                class="mx-2"
+                icon
+                dark
+                small
+                color="primary"
+              >
                 <v-icon dark>mdi-magnify</v-icon>
               </v-btn>
             </div>
@@ -96,7 +119,9 @@
           <v-row>
             <v-col xs="12" md="12" lg="4">
               <div class="text-center" v-if="search">
-                <v-btn rounded :color="categoryColor" dark>{{category}}</v-btn>
+                <v-btn rounded :color="categoryColor" dark>{{
+                  category
+                }}</v-btn>
                 <v-btn icon dark small color="primary" @click="clearSearch">
                   <v-icon dark>mdi-close</v-icon>
                 </v-btn>
@@ -127,9 +152,7 @@
                   ></v-img>
 
                   <v-card-title class="pb-5">
-                    {{
-                    something.eventName
-                    }}
+                    {{ something.eventName }}
                   </v-card-title>
 
                   <v-card-subtitle class="pt-1 pb-0 text-left">
@@ -190,11 +213,11 @@ import GuestCheck from "../components/GuestCheck.vue";
 
 export default {
   props: {
-    source: String
+    source: String,
   },
   components: {
     CreateRoom,
-    GuestCheck
+    GuestCheck,
   },
   data() {
     return {
@@ -222,26 +245,19 @@ export default {
         "Esporte",
         "E-sport",
         "Show ao vivo",
-        "Beleza e Moda"
+        "Beleza e Moda",
       ],
-      colors: [
-        "lime",
-        "teal",
-        "purple",
-        "black",
-        "cyan",
-        "indigo"
-      ]
+      colors: ["lime", "teal", "purple", "black", "cyan", "indigo"],
     };
   },
   computed: {
     ...mapState(["userId"]),
-    ...mapGetters(["isAuthenticated"])
+    ...mapGetters(["isAuthenticated"]),
   },
   watch: {
     group() {
       this.drawer = false;
-    }
+    },
   },
   methods: {
     ...mapActions(["logOut"]),
@@ -265,30 +281,30 @@ export default {
     },
     eventEmit() {
       let user = {
-        userId: this.userId
+        userId: this.userId,
       };
       this.getUserEvents(user);
     },
 
     getAllEvents() {
-      Event.getAllRooms().then(response => {
+      Event.getAllRooms().then((response) => {
         response
           .json()
-          .then(data => {
+          .then((data) => {
             console.log(data);
             this.items = data;
           })
-          .catch(error => console.log("error", error));
+          .catch((error) => console.log("error", error));
       });
     },
 
     deleteEvent(roomId) {
       let event = {
         roomId: roomId,
-        userId: this.userId
+        userId: this.userId,
       };
 
-      Event.deleteEvent(event).then(response => {
+      Event.deleteEvent(event).then((response) => {
         response
           .json()
           .then(() => {
@@ -300,7 +316,7 @@ export default {
               this.getUserEvents();
             }
           })
-          .catch(error => console.log("error", error));
+          .catch((error) => console.log("error", error));
       });
     },
     validateEvent(roomId) {
@@ -322,30 +338,25 @@ export default {
         this.y = "top";
         this.snackbar = true;
       }
-    }
+    },
   },
   created() {
     this.getAllEvents();
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
 
 <style scoped>
- div #app {
+div #app {
   width: 100vw !important;
-
 }
 
-
-  margin: 0 0;
-} 
- .home-header {
+.home-header {
   width: 100vw !important;
   color: #fff;
   background-color: #bb22dd;
-} 
-
+}
 
 .filter-box {
   margin-top: 1em;
@@ -353,6 +364,5 @@ export default {
 
 #event-container {
   margin-top: 0em;
-} 
-
+}
 </style>
