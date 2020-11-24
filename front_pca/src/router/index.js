@@ -5,7 +5,7 @@ import Home from '../views/Home.vue'
 import UserHome from '../views/UserHome.vue'
 import RegisterEvent from '../views/UserRegisterEvent.vue'
 import RegisterPageFree from '../views/RegisterPageFree.vue'
-// import RegisterPagePay from '../views/RegisterPagePay.vue'
+import RegisterPagePay from '../views/RegisterPagePay.vue'
 import EventPage from '../views/EventPage.vue'
 import GuestCheck from '../components/GuestCheck.vue'
 import Invite from '../views/Invite.vue'
@@ -42,21 +42,21 @@ const routes = [{
 },
 {
   path: '/register/:id',
-  name: 'register',
+  name: 'registerfree',
   component: RegisterPageFree,
   meta: {
     requiresVisitor: true,
   }
   ,
 },
-// {
-//   path: '/home/:id',
-//   name: 'home',
-//   component: RegisterPagePay,
-//   meta: {
-//     requiresAuth: true,
-//   }
-// },
+{
+  path: '/register/:id',
+  name: 'registerpay',
+  component: RegisterPagePay,
+  meta: {
+    requiresAuth: true,
+  }
+},
 {
   path: '/validate',
   name: 'validate',

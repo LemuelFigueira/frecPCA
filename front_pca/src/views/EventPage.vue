@@ -81,37 +81,90 @@
       <v-content>
         <v-container>
           <div class="text-left">
-            <v-btn small color="black" outlined class="my-2" to="/main"><v-icon>mdi-arrow-left</v-icon>Voltar</v-btn>
+            <v-btn small color="black" outlined class="my-2" to="/main"
+              ><v-icon>mdi-arrow-left</v-icon>Voltar</v-btn
+            >
           </div>
-              <v-card class="" max-width="100%">
-                <v-img class="white--text align-end" src="../assets/meca.jpg">
-                </v-img>
-                <v-card-title>{{event.eventName}}</v-card-title>
+          <v-card class="" max-width="100%">
+            <v-img class="white--text align-end" src="../assets/meca.jpg">
+            </v-img>
+            <v-card-title>{{ event.eventName }}</v-card-title>
 
-                <v-card-subtitle class="pb-0 text-left">{{event.eventAdress}},{{event.eventDistrict}},{{event.eventCity}}</v-card-subtitle>
+            <v-card-subtitle class="pb-0 text-left"
+              >{{ event.eventAdress }},{{ event.eventDistrict }},{{
+                event.eventCity
+              }}</v-card-subtitle
+            >
 
-                <v-card-text>
-                  <v-chip-group column >
-                    <v-chip color="primary" text-color="white" class="mx-auto"><v-icon left>mdi-calendar-check</v-icon> {{ event.eventDate }}</v-chip>
-                    <!-- <v-chip color="primary" text-color="white"><v-icon left>mdi-account-circle</v-icon> {{ event.participants }} participantes</v-chip> -->
-                    <row class="mx-auto">
-                    <v-chip color="green" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Inicio: {{ event.eventBeginTime }}</v-chip>
-                    <v-chip color="red" text-color="white"><v-icon left>mdi-alarm-check</v-icon>Fim: {{ event.eventEndTime }}</v-chip>
-                    </row>
-                  </v-chip-group>
-                </v-card-text> 
+            <v-card-text>
+              <v-chip-group column>
+                <v-chip color="primary" text-color="white" class="mx-auto"
+                  ><v-icon left>mdi-calendar-check</v-icon>
+                  {{ event.eventDate }}</v-chip
+                >
+                <!-- <v-chip color="primary" text-color="white"><v-icon left>mdi-account-circle</v-icon> {{ event.participants }} participantes</v-chip> -->
+                <row class="mx-auto">
+                  <v-chip color="green" text-color="white"
+                    ><v-icon left>mdi-alarm-check</v-icon>Inicio:
+                    {{ event.eventBeginTime }}</v-chip
+                  >
+                  <v-chip color="red" text-color="white"
+                    ><v-icon left>mdi-alarm-check</v-icon>Fim:
+                    {{ event.eventEndTime }}</v-chip
+                  >
+                </row>
+              </v-chip-group>
+            </v-card-text>
 
-                <v-divider class="mx-4"></v-divider>
+            <v-divider class="mx-4"></v-divider>
 
-                <v-card-text class="text--primary text-left">
-                  <div class="my-4">{{event.eventDescription}}</div>
-                </v-card-text>
+            <v-card-text class="text--primary text-left">
+              <div class="my-4">{{ event.eventDescription }}</div>
+            </v-card-text>
 
-                <v-card-actions class="justify-center">
-                  <v-btn  color="deep-purple" text :to="{name: 'register',params: { id: this.$route.params.id }}">Ir para Registro</v-btn>
-                </v-card-actions>
-              </v-card>
+            <v-card-text class="text--primary text-left">
+              <div class="my-4">
+                Preço do Evento: R$ {{ event.eventPrice }}/un
+              </div>
+            </v-card-text>
 
+            <v-card-actions class="justify-center">
+              <v-btn
+                v-if="event.freeEvent === 'true'"
+                color="deep-purple"
+                text
+                :to="{
+                  name: 'registerfree',
+                  params: { id: this.$route.params.id },
+                }"
+                >Ir para Registro</v-btn
+              >
+              <v-btn
+                v-if="event.freeEvent === 'false' && isAuthenticated"
+                color="deep-purple"
+                text
+                :to="{
+                  name: 'registerfree',
+                  params: { id: this.$route.params.id },
+                }"
+                >Ir para Registro</v-btn
+              >
+              <v-btn
+                @click="showModal = true"
+                v-if="event.freeEvent === 'false' && !isAuthenticated"
+                color="deep-purple"
+                text
+                >Ir para RegistroKRAIO</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+          <v-dialog
+            v-model="showModal"
+            
+            transition="dialog-bottom-transition"
+          >
+            <LoginModal @close="showModal = false" />
+          </v-dialog>
         </v-container>
         <v-snackbar
           v-model="snackbar"
@@ -137,10 +190,14 @@
 <script>
 import { mapActions, mapState, mapGetters } from "vuex";
 import Event from "@/repositories/Event";
+import LoginModal from "@/components/loginModal.vue";
 
 export default {
+  components: {
+    LoginModal,
+  },
   props: {
-    source: String
+    source: String,
   },
   data() {
     return {
@@ -155,65 +212,65 @@ export default {
       timeout: 4000,
       created: false,
       x: null,
-      y: '',
+      y: "",
       showModal: false,
-      event: {}
+      event: {},
     };
   },
   computed: {
     ...mapState(["userId"]),
-    ...mapGetters(['isAuthenticated']),
+    ...mapGetters(["isAuthenticated"]),
   },
   methods: {
     ...mapActions(["logOut"]),
     createRoom() {
       this.showModal = true;
     },
-    sair(){
-      this.logOut()
-      this.drawer = false
+    sair() {
+      this.logOut();
+      this.drawer = false;
     },
     eventEmit() {
       let user = {
-        userId: this.userId
+        userId: this.userId,
       };
       this.getUserEvents(user);
     },
 
     getUserEvents() {
       let user = {
-        userId: this.userId
+        userId: this.userId,
       };
-      Event.getRooms(user).then(response => {
+      Event.getRooms(user).then((response) => {
         response
           .json()
-          .then(data => {
+          .then((data) => {
             console.log(data);
             this.items = data;
           })
-          .catch(error => console.log("error", error));
+          .catch((error) => console.log("error", error));
       });
     },
 
     deleteEvent(roomId) {
       let event = {
         roomId: roomId,
-        userId: this.userId
+        userId: this.userId,
       };
 
-      Event.deleteEvent(event).then(response => {
+      Event.deleteEvent(event).then((response) => {
         response
           .json()
           .then(() => {
             if (response.status === 200) {
               this.color = "success";
               this.text = "Evento excluído";
-              this.y = 'bottom'
+              this.y = "bottom";
               this.snackbar = true;
               this.getUserEvents();
             }
           })
-          .catch(error => console.log("error", error));
+          .catch((error) => console.log("error", error));
       });
     },
     validateEvent(roomId) {
@@ -227,30 +284,30 @@ export default {
       if (result) {
         this.color = "success";
         this.text = "Url do evento copiada";
-        this.y = 'top'
+        this.y = "top";
         this.snackbar = true;
       } else {
         this.color = "error";
         this.text = "Url do evento copiada";
-        this.y = 'top'
+        this.y = "top";
         this.snackbar = true;
       }
-    }
+    },
   },
   created() {
     // this.getUserEvents();
   },
   mounted() {
     const newEvent = this.$route.params.id;
-    Event.getroom(newEvent).then(response => {
+    Event.getroom(newEvent).then((response) => {
       response
         .json()
-        .then(data => {
-          this.event = data[0]
-          // console.log(data);
+        .then((data) => {
+          this.event = data[0];
+          console.log(data);
         })
-        .catch(error => console.log("error", error));
+        .catch((error) => console.log("error", error));
     });
-  }
+  },
 };
 </script>

@@ -285,14 +285,27 @@ export default {
       };
       this.getUserEvents(user);
     },
-
+    filterEvent(data){
+      // var i;
+      // for(i=0; i< data.length; i++){
+      //          if(data[i].eventType === 'public'){
+      //     console.log(data[i])
+      //   } 
+      // }
+      data.find((object) => {
+        if(object.eventType === 'public'){
+          this.items.push(object)
+        }
+      });
+    },
     getAllEvents() {
       Event.getAllRooms().then((response) => {
         response
           .json()
           .then((data) => {
             console.log(data);
-            this.items = data;
+            this.filterEvent(data);
+            // this.items = data;
           })
           .catch((error) => console.log("error", error));
       });
