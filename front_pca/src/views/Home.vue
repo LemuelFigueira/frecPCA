@@ -295,8 +295,6 @@ export default {
 <style scoped>
 div #app {
   width: 100vw !important;
-
-  margin: 0 0;
 }
 
 .home-header {
@@ -305,7 +303,7 @@ div #app {
   background-color: #bb22dd;
 }
 
-#event-container {
-  margin-top: 0em;
+.filter-box {
+  margin-top: 1em;
 }
 </style>
