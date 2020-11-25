@@ -41,7 +41,7 @@ const routes = [{
   }
 },
 {
-  path: '/register/:id',
+  path: '/registerfree/:id',
   name: 'registerfree',
   component: RegisterPageFree,
   meta: {
@@ -50,7 +50,7 @@ const routes = [{
   ,
 },
 {
-  path: '/register/:id',
+  path: '/registerpay/:id',
   name: 'registerpay',
   component: RegisterPagePay,
   meta: {

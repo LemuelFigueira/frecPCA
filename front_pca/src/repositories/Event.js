@@ -79,7 +79,7 @@ export default {
     },
 
     async checkOut(Event){
-        let url = 'https://ivd4uju24l.execute-api.sa-east-1.amazonaws.com/dev/checkoutSession'
+        let url = 'https://5xapnt8h32.execute-api.sa-east-1.amazonaws.com/dev/checkoutSession'
         const params = {
             method: 'POST',
             headers: {

@@ -138,7 +138,8 @@
                             <v-icon size="48">mdi-arrow-left-circle</v-icon>
                           </v-btn>
                           <v-spacer></v-spacer>
-                          <v-btn color="deep-purple" :disabled="step === 3" text @click="payment()">
+                          <v-btn color="deep-purple" text @click="payment()">
+                            <!-- :disabled="step === 3"  -->
                             <v-icon size="48">mdi-arrow-right-circle</v-icon>
                           </v-btn>
                         </v-row>
@@ -207,7 +208,7 @@
   </div>
 </template>
 <script>
-// var stripe = window.Stripe('pk_test_51HlaLCL53UtpCrjBIiZuwQCP7cAw7q6GmNp0k20ZsrQhOhrGsNi94vMJfXLVuWOfontbMC844mlwrCrodxgPeSEU00R0ATITek');
+var stripe = window.Stripe('pk_test_51HlaLCL53UtpCrjBIiZuwQCP7cAw7q6GmNp0k20ZsrQhOhrGsNi94vMJfXLVuWOfontbMC844mlwrCrodxgPeSEU00R0ATITek');
 
 import { mapActions, mapState, mapGetters } from "vuex";
 import Event from "@/repositories/Event";
@@ -226,6 +227,7 @@ export default {
   data() {
     return {
       drawer: false,
+      sessionId: '',
       group: null,
       showModalValidation: false,
       roomIdValidation: "",
@@ -289,27 +291,27 @@ export default {
       this.submit();
     },
     payment(){
-      let data = {
+      let data = [{
         productValue: this.event.eventPrice,
         Qtn: 1,
         productDescription:this.event.eventDescription,
         productName: this.event.eventName,
-      }
+      }]
       console.log(data)
-      // Event.checkOut(data).then((response) => {
-      //   response
-      //     .json()
-      //     .then((data) => {
-      //       this.sessionId = data;
-      //       console.log(this.sessionId);
-      //       stripe.redirectToCheckout({
-      //         sessionId: this.sessionId.id
-      //       }).then(function (){
+      Event.checkOut(data).then((response) => {
+        response
+          .json()
+          .then((data) => {
+            this.sessionId = data;
+            console.log(this.sessionId);
+            stripe.redirectToCheckout({
+              sessionId: this.sessionId.id
+            }).then(function (){
 
-      //       });
-      //     })
-      //     .catch((error) => console.log("error", error));
-      // });
+            });
+          })
+          .catch((error) => console.log("error", error));
+      });
 
 
     },
