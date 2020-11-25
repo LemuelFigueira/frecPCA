@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
+import Success from '../views/successPayment.vue'
 import UserHome from '../views/UserHome.vue'
 import RegisterEvent from '../views/UserRegisterEvent.vue'
 import RegisterPageFree from '../views/RegisterPageFree.vue'
@@ -36,6 +37,14 @@ const routes = [{
   path: '/home',
   name: 'home',
   component: UserHome,
+  meta: {
+    requiresAuth: true,
+  }
+},
+{
+  path: '/success/:id',
+  name: 'success',
+  component: Success,
   meta: {
     requiresAuth: true,
   }

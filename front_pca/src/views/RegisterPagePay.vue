@@ -138,7 +138,7 @@
                             <v-icon size="48">mdi-arrow-left-circle</v-icon>
                           </v-btn>
                           <v-spacer></v-spacer>
-                          <v-btn color="deep-purple" text @click="payment()">
+                          <v-btn color="deep-purple" text @click="step++">
                             <!-- :disabled="step === 3"  -->
                             <v-icon size="48">mdi-arrow-right-circle</v-icon>
                           </v-btn>
@@ -256,6 +256,7 @@ export default {
       endTime: "",
       eventdate: "",
       guestPic: "",
+      idCode: "",
       name: "",
       step: 1
     };
@@ -287,7 +288,7 @@ export default {
       }
     },
     register() {
-      this.step++;
+      // this.step++;
       this.submit();
     },
     payment(){
@@ -296,6 +297,8 @@ export default {
         Qtn: 1,
         productDescription:this.event.eventDescription,
         productName: this.event.eventName,
+        idCode: this.idCode
+
       }]
       console.log(data)
       Event.checkOut(data).then((response) => {
@@ -336,6 +339,7 @@ export default {
               this.menssage = "Registrado!";
               this.showmsg = true;
               this.idCode = data;
+              this.payment()
             } else {
               this.alerticon = "error";
               this.menssage = "Erro no Registro!";

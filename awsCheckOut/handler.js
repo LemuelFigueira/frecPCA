@@ -18,7 +18,9 @@ function response(statusCode, message) {
 module.exports.checkoutSession = (event, context, callback) => {
   
   const products = [];
+  let idCode = "";
   const reqBody = JSON.parse(event.body);
+  
 
   reqBody.forEach(item => {
     const data = {};
@@ -27,16 +29,18 @@ module.exports.checkoutSession = (event, context, callback) => {
     data.currency = "brl";
     data.description = item.productDescription;
     data.name = item.productName
+    idCode = item.idCode
 
     products.push(data)
   });
   console.log(products)
+  console.log(idCode)
   return stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: products,
     mode: 'payment',
-    success_url: 'https://base-app-test.s3-sa-east-1.amazonaws.com/index.html#/home',
-    cancel_url: 'https://base-app-test.s3-sa-east-1.amazonaws.com/index.html#/carrinhocompras',
+    success_url: 'http://localhost:8080/#/success/' + idCode,
+    cancel_url: 'http://localhost:8080/#/main/',
   }).then((data) => {
     callback(null, response(200, data))
   })

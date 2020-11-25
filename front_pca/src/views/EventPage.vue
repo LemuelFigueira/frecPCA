@@ -122,9 +122,9 @@
               <div class="my-4">{{ event.eventDescription }}</div>
             </v-card-text>
 
-            <v-card-text class="text--primary text-left">
+            <v-card-text v-if="event.freeEvent === 'false'" class="text--primary text-left">
               <div class="my-4">
-                Preço do Evento: R$ {{ event.eventPrice }}/un
+                Preço do Evento: R$ {{ event.eventPrice }}
               </div>
             </v-card-text>
 
