@@ -38,32 +38,32 @@
             v-model="group"
             active-class="deep-purple--text text--accent-4"
           >
-            <router-link to="/main">
+            <router-link to="/main" style="text-decoration: none; color: inherit;">
               <v-list-item>
                 <v-list-item-title>Lista de Eventos</v-list-item-title>
               </v-list-item>
             </router-link>
             <v-divider></v-divider>
 
-            <router-link to="/home">
+            <router-link to="/home" style="text-decoration: none; color: inherit;">
               <v-list-item v-if="isAuthenticated">
                 <v-list-item-title>Meus eventos</v-list-item-title>
               </v-list-item>
             </router-link>
 
-            <router-link to="/registerevent">
+            <router-link to="/registerevent" style="text-decoration: none; color: inherit;">
               <v-list-item v-if="isAuthenticated">
                 <v-list-item-title>Eventos Inscritos</v-list-item-title>
               </v-list-item>
             </router-link>
 
-            <router-link to="/login">
+            <router-link to="/login" style="text-decoration: none; color: inherit;">
               <v-list-item v-if="!isAuthenticated">
                 <v-list-item-title>Logar</v-list-item-title>
               </v-list-item>
             </router-link>
 
-            <router-link to="/login">
+            <router-link to="/login" style="text-decoration: none; color: inherit;">
               <v-list-item v-if="!isAuthenticated">
                 <v-list-item-title>Cadastrar</v-list-item-title>
               </v-list-item>
@@ -138,6 +138,7 @@
               :key="index"
             >
               <router-link
+                style="text-decoration: none; color: inherit;"
                 :to="{
                   name: 'EventPage',
                   params: { id: something.roomId },
@@ -153,6 +154,7 @@
 
                   <v-card-title class="pb-5">
                     {{ something.eventName }}
+                    <div style="position:absolute;right:20%"><v-badge tile color="purple lighten-3" :content="eventCheck(something.freeEvent)"></v-badge></div>
                   </v-card-title>
 
                   <v-card-subtitle class="pt-1 pb-0 text-left">
@@ -300,6 +302,13 @@ export default {
         });
       }
       return items
+    },
+    eventCheck(event){
+      if(event === "true"){
+        return "Gratuito"
+      }else{
+        return "Pago"
+      }
     },
     getAllEvents() {
       Event.getAllRooms().then((response) => {

@@ -17,56 +17,56 @@
           <v-spacer></v-spacer>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" absolute temporary class="text-left">
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Menu Evento
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>          
-          <v-list nav dense>
-            <v-list-item-group
-              v-model="group"
-              active-class="deep-purple--text text--accent-4"
-            >
-              <router-link to="/main">
-                <v-list-item>
-                  <v-list-item-title>Lista de Eventos</v-list-item-title>
-                </v-list-item>
-              </router-link>
-
-              <v-divider></v-divider>
-
-              <router-link to="/home">
-                <v-list-item v-if="isAuthenticated">
-                  <v-list-item-title>Meus eventos</v-list-item-title>
-                </v-list-item>
-              </router-link> 
-
-              <router-link to="/login">
-                <v-list-item v-if="!isAuthenticated">
-                  <v-list-item-title>Logar</v-list-item-title>
-                </v-list-item>
-              </router-link>
-
-              <router-link to="/login">
-                <v-list-item v-if="!isAuthenticated">
-                  <v-list-item-title>Cadastrar</v-list-item-title>
-                </v-list-item>
-              </router-link>
-
-              <v-list-item v-if="isAuthenticated">
-                <v-list-item-title @click="sair()">
-                  <v-icon small>mdi-exit-to-app</v-icon>
-                  Sair
-                </v-list-item-title>
+      <v-navigation-drawer v-model="drawer" temporary app class="text-left">
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="title">Menu Evento</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list nav dense>
+          <v-list-item-group
+            v-model="group"
+            active-class="deep-purple--text text--accent-4"
+          >
+            <router-link to="/main" style="text-decoration: none; color: inherit;">
+              <v-list-item>
+                <v-list-item-title>Lista de Eventos</v-list-item-title>
               </v-list-item>
+            </router-link>
+            <v-divider></v-divider>
 
-            </v-list-item-group>
-          </v-list>
+            <router-link to="/home" style="text-decoration: none; color: inherit;">
+              <v-list-item v-if="isAuthenticated">
+                <v-list-item-title>Meus eventos</v-list-item-title>
+              </v-list-item>
+            </router-link>
 
-        </v-navigation-drawer>
+            <router-link to="/registerevent" style="text-decoration: none; color: inherit;">
+              <v-list-item v-if="isAuthenticated">
+                <v-list-item-title>Eventos Inscritos</v-list-item-title>
+              </v-list-item>
+            </router-link>
+
+            <router-link to="/login" style="text-decoration: none; color: inherit;">
+              <v-list-item v-if="!isAuthenticated">
+                <v-list-item-title>Logar</v-list-item-title>
+              </v-list-item>
+            </router-link>
+
+            <router-link to="/login" style="text-decoration: none; color: inherit;">
+              <v-list-item v-if="!isAuthenticated">
+                <v-list-item-title>Cadastrar</v-list-item-title>
+              </v-list-item>
+            </router-link>
+
+            <v-list-item v-if="isAuthenticated">
+              <v-list-item-title @click="sair()">
+                <v-icon small>mdi-exit-to-app</v-icon>Sair
+              </v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-navigation-drawer>
       <v-content>
         <v-window v-model="step" touchless>
           <!-- <v-window-item :value="1">
