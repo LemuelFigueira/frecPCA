@@ -361,7 +361,7 @@ export default {
           eventParticipants: this.numberParticipants,
           eventDescription: this.description,
           eventDate: this.dateFormatted,
-          eventCategory: this.eventCategory,
+          eventcategory: this.eventCategory,
           eventPrice: this.eventPrice,
           eventType: this.eventType,
           freeEvent: this.freeEvent,
@@ -383,7 +383,6 @@ export default {
         } else {
           newEvent.roomPicture = "no picture";
         }
-
         Event.createRoom(newEvent).then((response) => {
           response
             .json()

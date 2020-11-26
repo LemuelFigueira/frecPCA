@@ -103,7 +103,7 @@
                 ></v-select>
               </div>
             </v-col>
-            <div style="padding-top: 25px">
+            <!-- <div style="padding-top: 25px">
               <v-btn
                 @click="searchEventByCategory"
                 class="mx-2"
@@ -114,7 +114,7 @@
               >
                 <v-icon dark>mdi-magnify</v-icon>
               </v-btn>
-            </div>
+            </div> -->
           </v-row>
           <v-row>
             <v-col xs="12" md="12" lg="4">
@@ -134,7 +134,7 @@
               xs="12"
               md="12"
               lg="4"
-              v-for="(something, index) in this.items"
+              v-for="(something, index) in filterEvent()"
               :key="index"
             >
               <router-link
@@ -265,13 +265,6 @@ export default {
       this.search = false;
       this.selectCategory = false;
     },
-    searchEventByCategory() {
-      let index = this.categories.indexOf(this.selectCategory);
-      let getColor = this.colors[index];
-      this.categoryColor = getColor;
-      this.search = true;
-      this.category = this.selectCategory;
-    },
     createRoom() {
       this.showModal = true;
     },
@@ -285,18 +278,28 @@ export default {
       };
       this.getUserEvents(user);
     },
-    filterEvent(data){
-      // var i;
-      // for(i=0; i< data.length; i++){
-      //          if(data[i].eventType === 'public'){
-      //     console.log(data[i])
-      //   } 
-      // }
-      data.find((object) => {
-        if(object.eventType === 'public'){
-          this.items.push(object)
-        }
-      });
+    filterEvent(){
+      const items = []
+      if(this.selectCategory){
+        let index = this.categories.indexOf(this.selectCategory);
+        let getColor = this.colors[index];
+        this.categoryColor = getColor;
+        this.search = true;
+        this.category = this.selectCategory;
+
+        this.items.find((object) => {
+          if(object.eventcategory === this.selectCategory){
+            items.push(object)
+          }
+        });
+      }else{
+        this.items.find((object) => {
+          if(object.eventType === 'public'){
+            items.push(object)
+         }
+        });
+      }
+      return items
     },
     getAllEvents() {
       Event.getAllRooms().then((response) => {
@@ -304,8 +307,8 @@ export default {
           .json()
           .then((data) => {
             console.log(data);
-            this.filterEvent(data);
-            // this.items = data;
+            // this.filterEvent(data);
+            this.items = data;
           })
           .catch((error) => console.log("error", error));
       });
