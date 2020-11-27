@@ -306,6 +306,9 @@ export default {
       formData.append("name", this.name);
       formData.append("userPicture", newIMG);
       formData.append("roomId", this.$route.params.id);
+      if(this.$store.state.userId){
+        formData.append("participantId", this.$store.state.userId)
+      }
       for (var value of formData.values()) {
         console.log(value);
       }

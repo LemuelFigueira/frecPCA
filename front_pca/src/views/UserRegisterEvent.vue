@@ -139,26 +139,6 @@
                     </row>
                   </v-chip-group>
                 </v-card-text>
-                <v-card-actions class="justify-center">
-                  <v-btn
-                    color="deep-purple"
-                    @click="copyUrl(something.roomId)"
-                    text
-                    ><v-icon size="30">mdi-share-variant</v-icon></v-btn
-                  >
-                  <v-btn
-                    color="deep-purple"
-                    @click="validateEvent(something.roomId)"
-                    text
-                    ><v-icon size="30">mdi-account-check</v-icon></v-btn
-                  >
-                  <v-btn
-                    color="deep-purple"
-                    @click="deleteEvent(something.roomId)"
-                    text
-                    ><v-icon size="30">mdi-trash-can-outline</v-icon></v-btn
-                  >
-                </v-card-actions>
               </v-card>
             </v-col>
           </v-row>
@@ -188,6 +168,7 @@
 import { mapActions, mapState, mapGetters } from "vuex";
 import CreateRoom from "../components/CreateRoom.vue";
 import Event from "@/repositories/Event";
+import Participant from "@/repositories/Participant";
 import GuestCheck from "../components/GuestCheck.vue";
 export default {
   props: {
@@ -212,7 +193,10 @@ export default {
       x: null,
       y: "",
       showModal: false,
+      userRegister: [],
       items: [],
+      salas: []
+      
     };
   },
   computed: {
@@ -234,66 +218,54 @@ export default {
       };
       this.getUserEvents(user);
     },
-
-    getUserEvents() {
+    getAllRegisterEvents(){
+      
+    },
+    getAllParticipantRooms() {
       let user = {
-        userId: this.userId,
+        participantId: this.userId,
       };
-      Event.getRooms(user).then((response) => {
+      Participant.getAllParticipantRooms(user).then((response) => {
+        response
+          .json()
+          .then((data) => {
+            data.find((object) =>  {
+              this.userRegister.push(object.roomId)
+            })
+            Event.getAllRooms().then((response) => {
+              response
+                .json()
+                .then((data) => {
+                  data.find((object) => {
+                    if(this.userRegister.includes(object.roomId)){
+                      this.items.push(object)
+                    }
+                  })
+                  console.log("KRL", this.items)
+                })
+                .catch((error) => console.log("error", error));
+            });
+          })
+          .catch((error) => console.log("error", error));
+      });
+    },
+    getAllEvents() {
+      Event.getAllRooms().then((response) => {
         response
           .json()
           .then((data) => {
             console.log(data);
-            this.items = data;
+            // this.filterEvent(data);
+            this.salas = data;
           })
           .catch((error) => console.log("error", error));
       });
-    },
-
-    deleteEvent(roomId) {
-      let event = {
-        roomId: roomId,
-        userId: this.userId,
-      };
-
-      Event.deleteEvent(event).then((response) => {
-        response
-          .json()
-          .then(() => {
-            if (response.status === 200) {
-              this.color = "success";
-              this.text = "Evento excluído";
-              this.y = "bottom";
-              this.snackbar = true;
-              this.getUserEvents();
-            }
-          })
-          .catch((error) => console.log("error", error));
-      });
-    },
-    validateEvent(roomId) {
-      this.roomIdValidation = roomId;
-      this.$store.dispatch("currentEventValidate", roomId);
-      this.showModalValidation = true;
-    },
-    copyUrl(roomId) {
-      let baseUrl = `https://dev.d24tgjvftqomhk.amplifyapp.com/#/invite/${roomId}`;
-      let result = this.$clipboard(baseUrl);
-      if (result) {
-        this.color = "success";
-        this.text = "Url do evento copiada";
-        this.y = "top";
-        this.snackbar = true;
-      } else {
-        this.color = "error";
-        this.text = "Url do evento copiada";
-        this.y = "top";
-        this.snackbar = true;
-      }
     },
   },
   created() {
-    this.getUserEvents();
+    this.getAllParticipantRooms();
+    this.getAllRegisterEvents();
+    // this.getAllEvents();
   },
   mounted() {},
 };

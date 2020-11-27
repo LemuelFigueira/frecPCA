@@ -58,4 +58,19 @@ export default {
         }
         return fetch(apiUP, params)
     },
+    async getAllParticipantRooms(Participant) {
+
+        const api = 'https://sz7o081ir7.execute-api.sa-east-1.amazonaws.com/dev/room/getParticipantEvents'
+        
+        const params = {
+            method: 'POST',
+            // headers: {
+            //     "Content-type": "application/json",
+            //     "Accept": "application/json",
+                
+            // },
+            body:  JSON.stringify(Participant)
+        }
+        return fetch(api, params)
+    },
 }

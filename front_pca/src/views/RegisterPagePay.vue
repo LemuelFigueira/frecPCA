@@ -327,9 +327,11 @@ export default {
       formData.append("name", this.name);
       formData.append("userPicture", newIMG);
       formData.append("roomId", this.$route.params.id);
+      formData.append("participantId", this.$store.state.userId)
       for (var value of formData.values()) {
         console.log(value);
       }
+      console.log(formData)
       Participant.createParticipant(formData).then(response => {
         response
           .json()
